@@ -13,8 +13,7 @@ public class Author extends AuditModel{
     private long id;
     @Column(length = 45)
     private String username;
-    @Column
-    @JsonIgnore
+    @Column(length = 150)
     private String password;
     @Column(length = 45)
     private String first_name;
@@ -40,8 +39,8 @@ public class Author extends AuditModel{
      *
      * @return the password
      */
-    @JsonIgnore
-    @JsonProperty(value = "password")
+    // @JsonIgnore
+    // @JsonProperty(value = "password")
     public String getPassword() {
         return password;
     }
