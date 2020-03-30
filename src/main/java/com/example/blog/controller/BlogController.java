@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javassist.NotFoundException;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +38,12 @@ public class BlogController {
 
     @Autowired
     AuthorService authorService;
+
+    @Autowired
+    AuthorRepository authorRepository;
+
+    @Autowired
+    CategoriesRepository categoriesRepository;
 
     @RequestMapping(value="/list", method = RequestMethod.GET)
     public ResponseEntity<ResponseBaseDTO> listTags(){
@@ -91,30 +99,32 @@ public class BlogController {
 
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<ResponseBaseDTO> create(@RequestBody Blog blog){
+    public ResponseEntity<ResponseBaseDTO> create(@RequestBody Blog blog) throws NotFoundException{
         
         // Blog result = new Blog();
         ResponseBaseDTO response = new ResponseBaseDTO(); 
-        Optional<Author> author = authorService.findById(blog.getCategories_id());
-        Optional<Categories> categories = categoriesService.findById(blog.getCategories_id());
+        Author author = authorRepository.findById(blog.getAuthor_id()).orElseThrow(() -> new NotFoundException("Author id " + blog.getAuthor_id() + " NotFound"));
+        Categories categories = categoriesRepository.findById(blog.getCategories_id()).orElseThrow(() -> new NotFoundException("Categories id " + blog.getCategories_id() + " NotFound"));
+
+        // Optional<Categories> categories = categoriesService.findById(blog.getCategories_id());
         
         // Categories categories = categoriesService.findById(blog.getCategories_id());        
 
         blog.setAuthor(author);
         blog.setCategories(categories);
         
-        // try{
-        //     response.setStatus(true);
-        //     response.setCode("200");
-        //     response.setMessage("success");
+        try{
+            response.setStatus(true);
+            response.setCode("200");
+            response.setMessage("success");
             response.setData(blogService.save(blog));           
             return new ResponseEntity<>(response ,HttpStatus.OK);
-        // }catch(Exception e){
-        //     response.setStatus(false);
-        //     response.setCode("500");
-        //     response.setMessage(e.getMessage());
-        //     return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        // }
+        }catch(Exception e){
+            response.setStatus(false);
+            response.setCode("500");
+            response.setMessage(e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+        }
        
     }
 }

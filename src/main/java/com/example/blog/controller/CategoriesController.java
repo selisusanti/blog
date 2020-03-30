@@ -11,7 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javassist.NotFoundException;
+
 import com.example.blog.model.ResponseBaseDTO;
+import com.example.blog.repository.CategoriesRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +27,10 @@ public class CategoriesController{
 
     @Autowired
     private CategoriesService categoriesService;
+
+
+    @Autowired
+    private CategoriesRepository categoriesRepository;
 
     @RequestMapping(value="/categories", method = RequestMethod.GET)
     public ResponseEntity<ResponseBaseDTO> listUser(@RequestParam(required = false) String name){ 
@@ -57,32 +65,44 @@ public class CategoriesController{
     }
 
 
-    @RequestMapping(value = "/categories/{id}", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> getTagsById(@PathVariable("id") long id) {
+    // @RequestMapping(value = "/categories/{id}", method = RequestMethod.GET)
+    // public ResponseEntity<ResponseBaseDTO> getTagsById(@PathVariable("id") long id) {
 
-        ResponseBaseDTO response = new ResponseBaseDTO(); 
+    //     ResponseBaseDTO response = new ResponseBaseDTO(); 
 
-        try
-        {     
-            Optional<Categories> categories = categoriesService.findById(id); 
-            if (categories.isPresent()) {           
-                response.setStatus(true);
-                response.setCode("200");
-                response.setMessage("success");
-                response.setData(categories);     
+    //     try
+    //     {     
+    //         Categories categories = categoriesRepository.findById(id); 
+    //         // if (categories.isPresent()) {           
+    //             response.setStatus(true);
+    //             response.setCode("200");
+    //             response.setMessage("success");
+    //             response.setData(categories);     
                 
-            }
-            return new ResponseEntity<>( response, HttpStatus.OK);
-        }
-        catch(Exception e)
-        {
-            // catch error when get user
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage(e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        }
+    //         // }
+    //         return new ResponseEntity<>( response, HttpStatus.OK);
+    //     }
+    //     catch(Exception e)
+    //     {
+    //         // catch error when get user
+    //         response.setStatus(false);
+    //         response.setCode("500");
+    //         response.setMessage(e.getMessage());
+    //         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+    //     }
+    // }
+
+    @RequestMapping(value = "/categories/{id}", method = RequestMethod.GET)
+    public ResponseEntity<ResponseBaseDTO> getCategoriesById(@PathVariable Long id) throws NotFoundException {
+        ResponseBaseDTO response = new ResponseBaseDTO<>();
+
+        Categories categories = categoriesRepository.findById(id).orElseThrow(() -> new NotFoundException("Categories id " + id + " NotFound"));
+
+        response.setData(categories);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
 
 

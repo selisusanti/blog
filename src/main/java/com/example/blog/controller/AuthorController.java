@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javassist.NotFoundException;
+
 import com.example.blog.model.ResponseBaseDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.example.blog.model.Author;
@@ -126,31 +129,16 @@ try {
     }
 
 
-    @RequestMapping(value = "/search/{id}", method = RequestMethod.GET)
-  public ResponseEntity<ResponseBaseDTO> getAuthorById(@PathVariable("id") long id) {
+    @RequestMapping(value = "/categories/{id}", method = RequestMethod.GET)
+    public ResponseEntity<ResponseBaseDTO> getAuthorById(@PathVariable Long id) throws NotFoundException {
+        ResponseBaseDTO response = new ResponseBaseDTO<>();
 
-        ResponseBaseDTO response = new ResponseBaseDTO(); 
+        Author authors = authorRepository.findById(id).orElseThrow(() -> new NotFoundException("Categories id " + id + " NotFound"));
 
-        try
-        {     
-            Optional<Author> authors = authorRepository.findById(id); 
-            if (authors.isPresent()) {           
-                response.setStatus(true);
-                response.setCode("200");
-                response.setMessage("success");
-                response.setData(authors);     
-                
-            }
-            return new ResponseEntity<>( response, HttpStatus.OK);
-        }
-        catch(Exception e)
-        {
-            // catch error when get user
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage(e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        }
+        response.setData(authors);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
 }
