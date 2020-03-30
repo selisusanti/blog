@@ -23,6 +23,7 @@ import java.util.Optional;
 import com.example.blog.model.Categories;
 
 @RestController
+@RequestMapping("/categories")
 public class CategoriesController{
 
     @Autowired
@@ -32,8 +33,8 @@ public class CategoriesController{
     @Autowired
     private CategoriesRepository categoriesRepository;
 
-    @RequestMapping(value="/categories", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> listUser(@RequestParam(required = false) String name){ 
+    @RequestMapping(value="", method = RequestMethod.GET)
+    public ResponseEntity<ResponseBaseDTO> listCategories(@RequestParam(required = false) String name){ 
         ResponseBaseDTO response = new ResponseBaseDTO(); 
         try
         {         
@@ -64,35 +65,7 @@ public class CategoriesController{
         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
     }
 
-
-    // @RequestMapping(value = "/categories/{id}", method = RequestMethod.GET)
-    // public ResponseEntity<ResponseBaseDTO> getTagsById(@PathVariable("id") long id) {
-
-    //     ResponseBaseDTO response = new ResponseBaseDTO(); 
-
-    //     try
-    //     {     
-    //         Categories categories = categoriesRepository.findById(id); 
-    //         // if (categories.isPresent()) {           
-    //             response.setStatus(true);
-    //             response.setCode("200");
-    //             response.setMessage("success");
-    //             response.setData(categories);     
-                
-    //         // }
-    //         return new ResponseEntity<>( response, HttpStatus.OK);
-    //     }
-    //     catch(Exception e)
-    //     {
-    //         // catch error when get user
-    //         response.setStatus(false);
-    //         response.setCode("500");
-    //         response.setMessage(e.getMessage());
-    //         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-    //     }
-    // }
-
-    @RequestMapping(value = "/categories/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<ResponseBaseDTO> getCategoriesById(@PathVariable Long id) throws NotFoundException {
         ResponseBaseDTO response = new ResponseBaseDTO<>();
 
@@ -106,8 +79,8 @@ public class CategoriesController{
 
 
 
-    @RequestMapping(value = "/categories", method = RequestMethod.POST)
-    public ResponseEntity<ResponseBaseDTO> create(@RequestBody Categories categories){
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<ResponseBaseDTO> createCategories(@RequestBody Categories categories){
         
         Categories result = new Categories();
         ResponseBaseDTO response = new ResponseBaseDTO(); 
@@ -134,7 +107,7 @@ public class CategoriesController{
        
     }
 
-    @RequestMapping(value = "/categories/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public  ResponseEntity<ResponseBaseDTO> delete(@PathVariable(value = "id") Long id){       
        
         ResponseBaseDTO response = new ResponseBaseDTO(); 
@@ -154,8 +127,8 @@ public class CategoriesController{
       
     }
 
-    @RequestMapping(value = "/categories/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<ResponseBaseDTO> updateUser(@PathVariable("id") long id, @RequestBody Categories categories) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<ResponseBaseDTO> updateCategories(@PathVariable("id") long id, @RequestBody Categories categories) {
      
         ResponseBaseDTO response = new ResponseBaseDTO();
         try {
