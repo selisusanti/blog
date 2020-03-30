@@ -104,11 +104,7 @@ public class BlogController {
         // Blog result = new Blog();
         ResponseBaseDTO response = new ResponseBaseDTO(); 
         Author author = authorRepository.findById(blog.getAuthor_id()).orElseThrow(() -> new NotFoundException("Author id " + blog.getAuthor_id() + " NotFound"));
-        Categories categories = categoriesRepository.findById(blog.getCategories_id()).orElseThrow(() -> new NotFoundException("Categories id " + blog.getCategories_id() + " NotFound"));
-
-        // Optional<Categories> categories = categoriesService.findById(blog.getCategories_id());
-        
-        // Categories categories = categoriesService.findById(blog.getCategories_id());        
+        Categories categories = categoriesRepository.findById(blog.getCategories_id()).orElseThrow(() -> new NotFoundException("Categories id " + blog.getCategories_id() + " NotFound"));  
 
         blog.setAuthor(author);
         blog.setCategories(categories);

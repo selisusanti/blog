@@ -65,14 +65,6 @@ public class AuthorController {
         Author resultaAuthor = new Author();       
         ResponseBaseDTO response = new ResponseBaseDTO(); 
 
-        if(authors.getUsername().isEmpty() || authors.getLastname().isEmpty() || authors.getFirstname().isEmpty() ) 
-        {
-            // System.out.println(user.getEmail());
-            response.setMessage("column is null");
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-      
-        }
-        
         try
         {         
             authors.setPassword(passwordEncoder().encode(authors.getPassword()));  
@@ -105,9 +97,36 @@ try {
             Optional<Author> authorData = authorRepository.findById(id);
             if (authorData.isPresent()) {
                 Author _author = authorData.get();
-                _author.setFirstname(authors.getFirstname());
-                _author.setLastname(authors.getLastname());
+                _author.setFirst_name(authors.getFirst_name());
+                _author.setLast_name(authors.getLast_name());
                 _author.setUsername(authors.getUsername());
+             
+                response.setStatus(true);
+                response.setCode("200");
+                response.setMessage("success");  
+                response.setData(authorRepository.save(_author));            
+                
+            }
+            return new ResponseEntity<>( response, HttpStatus.OK);
+          
+        } catch (Exception e) {
+            // catch error when get user
+            response.setStatus(false);
+            response.setCode("500");
+            response.setMessage( "id " + id + " not exists! " );
+            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+        }
+       
+    }
+    @RequestMapping(value = "/updatepassword/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<ResponseBaseDTO> updatePassword(@PathVariable("id") long id, @RequestBody Author authors) {
+       
+        ResponseBaseDTO response = new ResponseBaseDTO();
+
+        try {
+            Optional<Author> authorData = authorRepository.findById(id);
+            if (authorData.isPresent()) {
+                Author _author = authorData.get();
                 _author.setPassword(passwordEncoder().encode(authors.getPassword()));  
              
                 response.setStatus(true);
@@ -128,8 +147,7 @@ try {
        
     }
 
-
-    @RequestMapping(value = "/categories/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/search/{id}", method = RequestMethod.GET)
     public ResponseEntity<ResponseBaseDTO> getAuthorById(@PathVariable Long id) throws NotFoundException {
         ResponseBaseDTO response = new ResponseBaseDTO<>();
 
