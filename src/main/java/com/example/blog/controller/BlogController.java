@@ -30,6 +30,10 @@ import com.example.blog.model.ResponseBaseDTO;
 @RequestMapping("/blogs")
 public class BlogController {
 
+
+    @Autowired
+    BlogRepository blogRepository;
+
     @Autowired
     BlogService blogService;
 
@@ -96,7 +100,33 @@ public class BlogController {
             return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
         }
     }
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<ResponseBaseDTO> updateBlog(@PathVariable("id") long id, @RequestBody Blog blog) throws NotFoundException{
+       
+        ResponseBaseDTO response = new ResponseBaseDTO();
+        Blog _blog       = blogRepository.findById(id).orElseThrow(() -> new NotFoundException("Blog id " + id + " NotFound"));
+          
+        try {
+            
+                _blog.setTitle(blog.getTitle());
+                _blog.setContent(blog.getContent());
 
+                response.setStatus(true);
+                response.setCode("200");
+                response.setMessage("success");  
+                response.setData(blogService.update(id, _blog));     
+
+                return new ResponseEntity<>( response, HttpStatus.OK);
+          
+        } catch (Exception e) {
+            // catch error when get user
+            response.setStatus(false);
+            response.setCode("500");
+            response.setMessage( "id " + id + " not exists! " );
+            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+        }
+       
+    }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<ResponseBaseDTO> create(@RequestBody Blog blog) throws NotFoundException{

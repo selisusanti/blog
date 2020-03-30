@@ -36,4 +36,8 @@ public class BlogService{
         return blogRepository.save(blog);
     }
 
+    public Blog update(Long id, Blog blog) {
+        blog.setId(id);
+        return blogRepository.save(blog);
+    }
 }

@@ -93,7 +93,7 @@ public class AuthorController {
        
         ResponseBaseDTO response = new ResponseBaseDTO();
 
-try {
+        try {
             Optional<Author> authorData = authorRepository.findById(id);
             if (authorData.isPresent()) {
                 Author _author = authorData.get();
