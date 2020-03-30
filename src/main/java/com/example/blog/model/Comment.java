@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import org.hibernate.annotations.OnDelete;
@@ -16,10 +17,11 @@ public class Comment extends AuditModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private transient Long blog_id;
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "blog_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonManagedReference
     private Blog blog;
 
     @Size(max = 80)
@@ -58,6 +60,14 @@ public class Comment extends AuditModel {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Long getBlog_id() {
+        return blog_id;
+    }
+
+    public void setBlog_id(Long blog_id) {
+        this.blog_id = blog_id;
     }
     
     
