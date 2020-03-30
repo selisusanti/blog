@@ -22,8 +22,8 @@ public class TagsService{
         return tagsRepository.findAll();
     }
 
-    public List<Tags> findByName(String name, Pageable pageable){
-        return tagsRepository.findByName(name, pageable);
+    public List<Tags> findByNameContaining(String name, Pageable pageable){
+        return tagsRepository.findByNameContaining(name, pageable);
     }
 
     public Optional<Tags> findById(Long id){

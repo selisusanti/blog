@@ -38,7 +38,7 @@ public class TagsController{
                 response.setMessage("success");
                 response.setData(tagslist);  
             }else{
-                List<Tags> tagslist = tagsService.findByName(name, pageable);
+                List<Tags> tagslist = tagsService.findByNameContaining(name, pageable);
                 response.setStatus(true);
                 response.setCode("200");
                 response.setMessage("success");
