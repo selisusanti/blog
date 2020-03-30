@@ -20,13 +20,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/tags")
 public class TagsController{
 
     @Autowired
     private TagsService tagsService; 
 
-    @RequestMapping(value="/tags", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> listUser(@RequestParam(required = false) String name, Pageable pageable){ 
+    @RequestMapping(value="", method = RequestMethod.GET)
+    public ResponseEntity<ResponseBaseDTO> listTags(@RequestParam(required = false) String name, Pageable pageable){ 
         ResponseBaseDTO response = new ResponseBaseDTO(); 
         try
         {         
@@ -57,7 +58,7 @@ public class TagsController{
         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
     }
 
-    @RequestMapping(value = "/tags/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<ResponseBaseDTO> getTagsById(@PathVariable("id") long id) {
 
         ResponseBaseDTO response = new ResponseBaseDTO(); 
@@ -84,7 +85,7 @@ public class TagsController{
         }
     }
 
-    @RequestMapping(value = "/tags", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<ResponseBaseDTO> create(@RequestBody Tags tags){
         
         Tags result = new Tags();
@@ -112,7 +113,7 @@ public class TagsController{
        
     }
 
-    @RequestMapping(value = "/tags/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public  ResponseEntity<ResponseBaseDTO> delete(@PathVariable(value = "id") Long id){       
        
         ResponseBaseDTO response = new ResponseBaseDTO(); 
@@ -132,8 +133,8 @@ public class TagsController{
       
     }
 
-    @RequestMapping(value = "/tags/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<ResponseBaseDTO> updateUser(@PathVariable("id") long id, @RequestBody User user) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<ResponseBaseDTO> updateTags(@PathVariable("id") long id, @RequestBody User user) {
      
         ResponseBaseDTO response = new ResponseBaseDTO();
         try {
