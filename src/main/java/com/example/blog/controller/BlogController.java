@@ -49,8 +49,8 @@ public class BlogController {
     @Autowired
     CategoriesRepository categoriesRepository;
 
-    @RequestMapping(value="/list", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> listTags(){
+    @RequestMapping(value="", method = RequestMethod.GET)
+    public ResponseEntity<ResponseBaseDTO> ListBlog(){
         ResponseBaseDTO response = new ResponseBaseDTO();         
         
         try
@@ -75,8 +75,8 @@ public class BlogController {
     }
 
 
-    @RequestMapping(value = "/list/{id}", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> getTagsById(@PathVariable("id") long id) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<ResponseBaseDTO> getBlogById(@PathVariable("id") long id) {
 
         ResponseBaseDTO response = new ResponseBaseDTO(); 
         try
@@ -100,7 +100,7 @@ public class BlogController {
             return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
         }
     }
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<ResponseBaseDTO> updateBlog(@PathVariable("id") long id, @RequestBody Blog blog) throws NotFoundException{
        
         ResponseBaseDTO response = new ResponseBaseDTO();
@@ -129,7 +129,7 @@ public class BlogController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<ResponseBaseDTO> create(@RequestBody Blog blog) throws NotFoundException{
+    public ResponseEntity<ResponseBaseDTO> createBlog(@RequestBody Blog blog) throws NotFoundException{
         
         // Blog result = new Blog();
         ResponseBaseDTO response = new ResponseBaseDTO(); 
@@ -153,4 +153,26 @@ public class BlogController {
         }
        
     }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public  ResponseEntity<ResponseBaseDTO> delete(@PathVariable(value = "id") Long id){       
+       
+        ResponseBaseDTO response = new ResponseBaseDTO(); 
+
+        try{         
+            blogService.deleteById(id);
+            response.setStatus(true);
+            response.setCode("200");
+            response.setMessage("success");    
+            return new ResponseEntity<>(response ,HttpStatus.OK);
+        }catch(Exception e){
+            response.setStatus(false);
+            response.setCode("500");
+            response.setMessage( "id " + id + " not exists! " );
+            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+        }
+      
+    }
+
+
 }
