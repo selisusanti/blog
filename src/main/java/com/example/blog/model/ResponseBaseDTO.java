@@ -2,17 +2,14 @@ package com.example.blog.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class ResponseBaseDTO<Any> {
 
  private boolean status = false;
  
- private String code = "500";
+ private String code = "200";
  
- private String message = "internal server error";
+ private String message = "Success";
 
  private Any data;
 

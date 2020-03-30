@@ -8,6 +8,7 @@ import com.example.blog.model.Tags;
 import com.example.blog.service.TagsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class TagsController{
     private TagsService tagsService; 
 
     @RequestMapping(value="/tags", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> listUser(@RequestParam(required = false) String name){ 
+    public ResponseEntity<ResponseBaseDTO> listUser(@RequestParam(required = false) String name, Pageable pageable){ 
         ResponseBaseDTO response = new ResponseBaseDTO(); 
         try
         {         
@@ -36,7 +37,7 @@ public class TagsController{
                 response.setMessage("success");
                 response.setData(tagslist);  
             }else{
-                List<Tags> tagslist = tagsService.findByName(name);
+                List<Tags> tagslist = tagsService.findByName(name, pageable);
                 response.setStatus(true);
                 response.setCode("200");
                 response.setMessage("success");

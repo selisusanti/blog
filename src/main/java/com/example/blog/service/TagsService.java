@@ -6,6 +6,7 @@ import com.example.blog.model.Tags;
 import com.example.blog.repository.TagsRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,8 +22,8 @@ public class TagsService{
         return tagsRepository.findAll();
     }
 
-    public List<Tags> findByName(String name){
-        return tagsRepository.findByName(name);
+    public List<Tags> findByName(String name, Pageable pageable){
+        return tagsRepository.findByName(name, pageable);
     }
 
     public Optional<Tags> findById(Long id){
