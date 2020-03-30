@@ -32,8 +32,8 @@ public class AuthorController {
         return new BCryptPasswordEncoder();
     }
 
-    @RequestMapping(value="/list", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> listTags(){
+    @RequestMapping(value="", method = RequestMethod.GET)
+    public ResponseEntity<ResponseBaseDTO> listAuthor(){
         ResponseBaseDTO response = new ResponseBaseDTO();         
      
         try
@@ -59,7 +59,7 @@ public class AuthorController {
     }
 
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<ResponseBaseDTO> create(@RequestBody Author authors){
          
         Author resultaAuthor = new Author();       
@@ -88,8 +88,8 @@ public class AuthorController {
     }
 
 
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<ResponseBaseDTO> updateUser(@PathVariable("id") long id, @RequestBody Author authors) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<ResponseBaseDTO> updateAuthor(@PathVariable("id") long id, @RequestBody Author authors) {
        
         ResponseBaseDTO response = new ResponseBaseDTO();
 
@@ -147,7 +147,7 @@ public class AuthorController {
        
     }
 
-    @RequestMapping(value = "/search/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<ResponseBaseDTO> getAuthorById(@PathVariable Long id) throws NotFoundException {
         ResponseBaseDTO response = new ResponseBaseDTO<>();
 
