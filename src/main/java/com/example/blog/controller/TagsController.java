@@ -8,6 +8,7 @@ import com.example.blog.model.Tags;
 import com.example.blog.service.TagsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.HttpStatus;
@@ -32,20 +33,22 @@ public class TagsController{
         try
         {         
             if(name == null){
-                List<Tags> tagslist = tagsService.findAll();
+                Page<Tags> tagslist = tagsService.findAll(pageable);
                 response.setStatus(true);
                 response.setCode("200");
                 response.setMessage("success");
                 response.setData(tagslist);  
-            }else{
-                List<Tags> tagslist = tagsService.findByNameContaining(name, pageable);
-                response.setStatus(true);
-                response.setCode("200");
-                response.setMessage("success");
-                response.setData(tagslist);  
-            }
                   
-            return new ResponseEntity<>(response ,HttpStatus.OK);
+                return new ResponseEntity<>(response ,HttpStatus.OK);
+            }else{
+                Page<Tags> tagslist = tagsService.findByNameContaining(name, pageable);
+                response.setStatus(true);
+                response.setCode("200");
+                response.setMessage("success");
+                response.setData(tagslist);  
+                  
+                return new ResponseEntity<>(response ,HttpStatus.OK);
+            }
         }
         catch(Exception e)
         {
