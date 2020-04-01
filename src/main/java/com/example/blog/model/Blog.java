@@ -2,6 +2,7 @@ package com.example.blog.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -24,6 +26,8 @@ public class Blog extends AuditModel implements Serializable  {
     private transient Long author_id;
 
     private transient Long categories_id;
+
+    private transient List<Long> tags_id;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -41,6 +45,14 @@ public class Blog extends AuditModel implements Serializable  {
     @Column(columnDefinition = "TEXT")
     private String content;
     
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(
+        name = "blog_tags", 
+        joinColumns = { @JoinColumn(name = "blog_id") }, 
+        inverseJoinColumns = { @JoinColumn(name = "tags_id")}
+    )
+    private List<Tags> tag = new ArrayList<>();
+
     public Long getId() {
         return id;
     }
@@ -95,6 +107,22 @@ public class Blog extends AuditModel implements Serializable  {
 
     public void setCategories_id(Long categories_id) {
         this.categories_id = categories_id;
+    }
+
+    public List<Long> getTags_id() {
+        return tags_id;
+    }
+
+    public void setTags_id(List<Long> tags_id) {
+        this.tags_id = tags_id;
+    }
+
+    public List<Tags> getTag() {
+        return tag;
+    }
+
+    public void setTag(List<Tags> tag) {
+        this.tag = tag;
     }
 
     

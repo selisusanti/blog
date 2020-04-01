@@ -3,11 +3,12 @@ package com.example.blog.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -21,27 +22,23 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class BlogTags implements Serializable{
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "tags_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonManagedReference
     private Tags tags;
     
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "blog_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonManagedReference
     private Blog blog;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @CreatedDate
+    @JoinColumn(name = "created_at", updatable = false)
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy HH:mm:ss",timezone="GMT+7")
+    @CreationTimestamp
     private Date createdAt;
-
 
     public Long getId() {
         return id;
@@ -49,6 +46,14 @@ public class BlogTags implements Serializable{
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Tags getTags() {
+        return tags;
+    }
+
+    public void setTags(Tags tags) {
+        this.tags = tags;
     }
 
     public Blog getBlog() {
@@ -59,13 +64,6 @@ public class BlogTags implements Serializable{
         this.blog = blog;
     }
 
-
-    @PrePersist
-    public void onPrePersist() {
-        this.createdAt = new Date();
-      
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -74,11 +72,5 @@ public class BlogTags implements Serializable{
         this.createdAt = createdAt;
     }
 
-    public Tags getTags() {
-        return tags;
-    }
-
-    public void setTags(Tags tags) {
-        this.tags = tags;
-    }
+    
 }
