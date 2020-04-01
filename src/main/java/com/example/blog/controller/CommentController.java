@@ -10,6 +10,8 @@ import com.example.blog.service.CategoriesService;
 import com.example.blog.service.CommentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,12 +49,12 @@ public class CommentController {
     CommentRepository commentRepository;
 
     @RequestMapping(value="", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> ListComment(){
+    public ResponseEntity<ResponseBaseDTO> ListComment(Pageable pageable){
         ResponseBaseDTO response = new ResponseBaseDTO();         
         
         try
         {         
-            List<Comment> comment = commentService.findAll();
+            Page<Comment> comment = commentService.findAll(pageable);
             response.setStatus(true);
             response.setCode("200");
             response.setMessage("success");

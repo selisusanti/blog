@@ -3,6 +3,7 @@ package com.example.blog.controller;
 import com.example.blog.repository.AuthorRepository;
 import com.example.blog.repository.BlogRepository;
 import com.example.blog.repository.CategoriesRepository;
+import com.example.blog.repository.TagsRepository;
 import com.example.blog.service.AuthorService;
 import com.example.blog.service.BlogService;
 import com.example.blog.service.CategoriesService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javassist.NotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +27,7 @@ import com.example.blog.model.Author;
 import com.example.blog.model.Blog;
 import com.example.blog.model.Categories;
 import com.example.blog.model.ResponseBaseDTO;
+import com.example.blog.model.Tags;
 
 @RestController
 @RequestMapping("/blogs")
@@ -36,6 +39,9 @@ public class BlogController {
 
     @Autowired
     BlogService blogService;
+
+    @Autowired
+    TagsRepository tagsRepository; 
 
     @Autowired
     CategoriesService categoriesService;
@@ -136,8 +142,17 @@ public class BlogController {
         Author author = authorRepository.findById(blog.getAuthor_id()).orElseThrow(() -> new NotFoundException("Author id " + blog.getAuthor_id() + " NotFound"));
         Categories categories = categoriesRepository.findById(blog.getCategories_id()).orElseThrow(() -> new NotFoundException("Categories id " + blog.getCategories_id() + " NotFound"));  
 
+        List<Long> tagtag = blog.getTags_id();
+        ArrayList<Tags> tags = new ArrayList<Tags>();
+
+        for (Long tag : tagtag) {
+            Tags val = tagsRepository.findById(tag).orElseThrow(() -> new NotFoundException("Tags id " + tag + " NotFound"));
+            tags.add(val);
+        }
+
         blog.setAuthor(author);
         blog.setCategories(categories);
+        blog.setTag(tags);
         
         try{
             response.setStatus(true);
