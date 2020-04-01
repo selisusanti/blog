@@ -1,4 +1,5 @@
 package com.example.blog.service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import com.example.blog.repository.BlogRepository;
 import com.example.blog.repository.TagsRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +26,8 @@ public class BlogService{
         blogRepository.deleteById(id);
     }
 
-    public List<Blog> findAll(){
-        return blogRepository.findAll();
+    public Page<Blog> findAll(Pageable pageable){
+        return blogRepository.findAll(pageable);
     }
 
     public Optional<Blog> findById(Long id){
