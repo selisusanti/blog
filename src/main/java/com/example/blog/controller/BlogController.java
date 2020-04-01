@@ -9,6 +9,8 @@ import com.example.blog.service.BlogService;
 import com.example.blog.service.CategoriesService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,12 +58,12 @@ public class BlogController {
     CategoriesRepository categoriesRepository;
 
     @RequestMapping(value="", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> ListBlog(){
+    public ResponseEntity<ResponseBaseDTO> ListBlog(Pageable pageable){
         ResponseBaseDTO response = new ResponseBaseDTO();         
         
         try
         {         
-            List<Blog> blogs = blogService.findAll();
+            Page<Blog> blogs = blogService.findAll(pageable);
             response.setStatus(true);
             response.setCode("200");
             response.setMessage("success");
