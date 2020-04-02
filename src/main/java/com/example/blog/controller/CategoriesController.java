@@ -3,6 +3,8 @@ package com.example.blog.controller;
 import com.example.blog.service.CategoriesService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,18 +36,18 @@ public class CategoriesController{
     private CategoriesRepository categoriesRepository;
 
     @RequestMapping(value="", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> listCategories(@RequestParam(required = false) String name){ 
+    public ResponseEntity<ResponseBaseDTO> listCategories(@RequestParam(required = false) String name, Pageable pageable){ 
         ResponseBaseDTO response = new ResponseBaseDTO(); 
         try
         {         
             if(name == null){
-                List<Categories> tagslist = categoriesService.findAll();
+                Page<Categories> tagslist = categoriesService.findAll(pageable);
                 response.setStatus(true);
                 response.setCode("200");
                 response.setMessage("success");
                 response.setData(tagslist);  
             }else{
-                List<Categories> tagslist = categoriesService.findByName(name);
+                Page<Categories> tagslist = categoriesService.findByNameContaining(name,pageable);
                 response.setStatus(true);
                 response.setCode("200");
                 response.setMessage("success");

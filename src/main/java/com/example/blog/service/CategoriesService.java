@@ -1,4 +1,5 @@
 package com.example.blog.service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,8 @@ import com.example.blog.repository.CategoriesRepository;
 import com.example.blog.repository.TagsRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,12 +22,12 @@ public class CategoriesService{
         this.categoriesRepository = categoriesRepository;
     }
 
-    public List<Categories> findAll(){
-        return categoriesRepository.findAll();
+    public Page<Categories> findAll(Pageable pageable){
+        return categoriesRepository.findAll(pageable);
     }
 
-    public List<Categories> findByName(String name){
-        return categoriesRepository.findByName(name);
+    public Page<Categories> findByNameContaining(String name,Pageable pageable){
+        return categoriesRepository.findByNameContaining(name,pageable);
     }
 
     public Optional<Categories> findById(Long id){
