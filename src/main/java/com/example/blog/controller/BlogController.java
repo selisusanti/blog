@@ -7,6 +7,7 @@ import com.example.blog.repository.TagsRepository;
 import com.example.blog.service.AuthorService;
 import com.example.blog.service.BlogService;
 import com.example.blog.service.CategoriesService;
+import com.example.blog.service.TagsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,6 +46,9 @@ public class BlogController {
 
     @Autowired
     TagsRepository tagsRepository; 
+
+    @Autowired
+    TagsService tagsService; 
 
     @Autowired
     CategoriesService categoriesService;
@@ -145,13 +149,32 @@ public class BlogController {
         Author author = authorRepository.findById(blog.getAuthor_id()).orElseThrow(() -> new NotFoundException("Author id " + blog.getAuthor_id() + " NotFound"));
         Categories categories = categoriesRepository.findById(blog.getCategories_id()).orElseThrow(() -> new NotFoundException("Categories id " + blog.getCategories_id() + " NotFound"));  
 
-        List<Long> tagtag = blog.getTags_id();
+
+        List<String> tagname = blog.getTags_name();
         ArrayList<Tags> tags = new ArrayList<Tags>();
 
-        for (Long tag : tagtag) {
-            Tags val = tagsRepository.findById(tag).orElseThrow(() -> new NotFoundException("Tags id " + tag + " NotFound"));
-            tags.add(val);
+        for (String tag : tagname) {
+            Optional<Tags> detailList = tagsService.findByName(tag);
+            if (detailList.isPresent()) {
+                Tags val = tagsRepository.findByName(tag).orElseThrow(() -> new NotFoundException("Tags name " + tag + " NotFound"));
+                tags.add(val);
+            }else{
+                Tags newtags = new Tags();
+                newtags.setName(tag);
+                Tags tagssave = tagsRepository.save(newtags);
+                tags.add(tagssave);
+            }
         }
+        // List<Long> tagtag = blog.getTags_id();
+        // ArrayList<Tags> tags = new ArrayList<Tags>();
+
+        // for (Long tag : tagtag) {
+        //     Tags val = tagsRepository.findById(tag).orElseThrow(() -> new NotFoundException("Tags id " + tag + " NotFound"));
+        //     tags.add(val);
+        // }
+
+
+        
 
         blog.setAuthor(author);
         blog.setCategories(categories);

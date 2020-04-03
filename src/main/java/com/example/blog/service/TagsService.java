@@ -29,6 +29,10 @@ public class TagsService{
 
     public Optional<Tags> findById(Long id){
         return tagsRepository.findById(id);
+    } 
+    
+    public Optional<Tags> findByName(String name){
+        return tagsRepository.findByName(name);
     }
 
     public Tags save(Tags tags){
