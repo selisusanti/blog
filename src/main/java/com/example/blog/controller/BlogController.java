@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.blog.common.dto.request.DeleteDTO;
 
 import javassist.NotFoundException;
 
@@ -171,13 +172,14 @@ public class BlogController {
        
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public  ResponseEntity<ResponseBaseDTO> delete(@PathVariable(value = "id") Long id){       
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    public  ResponseEntity<ResponseBaseDTO> delete(@RequestBody DeleteDTO request){       
        
         ResponseBaseDTO response = new ResponseBaseDTO(); 
-
+ 
         try{         
-            blogService.deleteById(id);
+            Blog blog = blogRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException("Comment id " + request.getId() + " NotFound"));
+            blogRepository.delete(blog);
             response.setStatus(true);
             response.setCode("200");
             response.setMessage("success");    
@@ -185,7 +187,7 @@ public class BlogController {
         }catch(Exception e){
             response.setStatus(false);
             response.setCode("500");
-            response.setMessage( "id " + id + " not exists! " );
+            response.setMessage( "id " + request.getId() + " not exists! " );
             return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
         }
       
