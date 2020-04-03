@@ -22,6 +22,7 @@ import com.example.blog.repository.CategoriesRepository;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.blog.common.dto.request.DeleteDTO;
 import com.example.blog.model.Categories;
 
 @RestController
@@ -109,13 +110,14 @@ public class CategoriesController{
        
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public  ResponseEntity<ResponseBaseDTO> delete(@PathVariable(value = "id") Long id){       
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    public  ResponseEntity<ResponseBaseDTO> delete(@RequestBody DeleteDTO request){       
        
         ResponseBaseDTO response = new ResponseBaseDTO(); 
-
-        try{         
-            categoriesService.deleteById(id);
+        
+        try{     
+            Categories categories = categoriesRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException("Comment id " + request.getId() + " NotFound"));
+            categoriesRepository.delete(categories);
             response.setStatus(true);
             response.setCode("200");
             response.setMessage("success");    
@@ -123,7 +125,7 @@ public class CategoriesController{
         }catch(Exception e){
             response.setStatus(false);
             response.setCode("500");
-            response.setMessage( "id " + id + " not exists! " );
+            response.setMessage( "id " + request.getId() + " not exists! " );
             return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
         }
       

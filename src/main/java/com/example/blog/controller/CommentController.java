@@ -156,9 +156,9 @@ public class CommentController {
     public  ResponseEntity<ResponseBaseDTO> delete(@RequestBody DeleteDTO request) throws NotFoundException {       
        
         ResponseBaseDTO response = new ResponseBaseDTO(); 
-           
+        Comment comment = commentRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException("Comment id " + request.getId() + " NotFound"));
+            
         try{       
-            Comment comment = commentRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException("Author id " + request.getId() + " NotFound"));
             commentRepository.delete(comment);
             response.setStatus(true);
             response.setCode("200");

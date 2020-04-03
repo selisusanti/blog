@@ -3,8 +3,10 @@ package com.example.blog.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.blog.common.dto.request.DeleteDTO;
 import com.example.blog.model.ResponseBaseDTO;
 import com.example.blog.model.Tags;
+import com.example.blog.repository.TagsRepository;
 import com.example.blog.service.TagsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +22,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javassist.NotFoundException;
+
 @RestController
 @RequestMapping("/tags")
 public class TagsController{
 
     @Autowired
     private TagsService tagsService; 
+
+    @Autowired
+    private TagsRepository tagsRepository; 
 
     @RequestMapping(value="", method = RequestMethod.GET)
     public ResponseEntity<ResponseBaseDTO> listTags(@RequestParam(required = false) String name, Pageable pageable){ 
@@ -116,13 +123,14 @@ public class TagsController{
        
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public  ResponseEntity<ResponseBaseDTO> delete(@PathVariable(value = "id") Long id){       
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    public  ResponseEntity<ResponseBaseDTO> delete(@RequestBody DeleteDTO request){       
        
         ResponseBaseDTO response = new ResponseBaseDTO(); 
 
         try{         
-            tagsService.deleteById(id);
+            Tags tags = tagsRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException("Comment id " + request.getId() + " NotFound"));
+            tagsRepository.delete(tags);
             response.setStatus(true);
             response.setCode("200");
             response.setMessage("success");    
@@ -130,7 +138,7 @@ public class TagsController{
         }catch(Exception e){
             response.setStatus(false);
             response.setCode("500");
-            response.setMessage( "id " + id + " not exists! " );
+            response.setMessage( "id " + request.getId() + " not exists! " );
             return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
         }
       
