@@ -7,6 +7,7 @@ import com.example.blog.repository.TagsRepository;
 import com.example.blog.service.AuthorService;
 import com.example.blog.service.BlogService;
 import com.example.blog.service.CategoriesService;
+import com.example.blog.service.TagsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.blog.common.dto.request.DeleteDTO;
 
 import javassist.NotFoundException;
 
@@ -44,6 +46,9 @@ public class BlogController {
 
     @Autowired
     TagsRepository tagsRepository; 
+
+    @Autowired
+    TagsService tagsService; 
 
     @Autowired
     CategoriesService categoriesService;
@@ -144,13 +149,32 @@ public class BlogController {
         Author author = authorRepository.findById(blog.getAuthor_id()).orElseThrow(() -> new NotFoundException("Author id " + blog.getAuthor_id() + " NotFound"));
         Categories categories = categoriesRepository.findById(blog.getCategories_id()).orElseThrow(() -> new NotFoundException("Categories id " + blog.getCategories_id() + " NotFound"));  
 
-        List<Long> tagtag = blog.getTags_id();
+
+        List<String> tagname = blog.getTags_name();
         ArrayList<Tags> tags = new ArrayList<Tags>();
 
-        for (Long tag : tagtag) {
-            Tags val = tagsRepository.findById(tag).orElseThrow(() -> new NotFoundException("Tags id " + tag + " NotFound"));
-            tags.add(val);
+        for (String tag : tagname) {
+            Optional<Tags> detailList = tagsService.findByName(tag);
+            if (detailList.isPresent()) {
+                Tags val = tagsRepository.findByName(tag).orElseThrow(() -> new NotFoundException("Tags name " + tag + " NotFound"));
+                tags.add(val);
+            }else{
+                Tags newtags = new Tags();
+                newtags.setName(tag);
+                Tags tagssave = tagsRepository.save(newtags);
+                tags.add(tagssave);
+            }
         }
+        // List<Long> tagtag = blog.getTags_id();
+        // ArrayList<Tags> tags = new ArrayList<Tags>();
+
+        // for (Long tag : tagtag) {
+        //     Tags val = tagsRepository.findById(tag).orElseThrow(() -> new NotFoundException("Tags id " + tag + " NotFound"));
+        //     tags.add(val);
+        // }
+
+
+        
 
         blog.setAuthor(author);
         blog.setCategories(categories);
@@ -171,13 +195,14 @@ public class BlogController {
        
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public  ResponseEntity<ResponseBaseDTO> delete(@PathVariable(value = "id") Long id){       
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    public  ResponseEntity<ResponseBaseDTO> delete(@RequestBody DeleteDTO request){       
        
         ResponseBaseDTO response = new ResponseBaseDTO(); 
-
+ 
         try{         
-            blogService.deleteById(id);
+            Blog blog = blogRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException("Comment id " + request.getId() + " NotFound"));
+            blogRepository.delete(blog);
             response.setStatus(true);
             response.setCode("200");
             response.setMessage("success");    
@@ -185,7 +210,7 @@ public class BlogController {
         }catch(Exception e){
             response.setStatus(false);
             response.setCode("500");
-            response.setMessage( "id " + id + " not exists! " );
+            response.setMessage( "id " + request.getId() + " not exists! " );
             return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
         }
       

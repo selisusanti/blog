@@ -108,12 +108,23 @@ public class TagsController{
         }
         
         try{
-            result =  tagsService.save(tags);
-            response.setStatus(true);
-            response.setCode("200");
-            response.setMessage("success");
-            response.setData(result);           
-            return new ResponseEntity<>(response ,HttpStatus.OK);
+
+            Optional<Tags> detailList = tagsService.findByName(tags.getName());
+            if (detailList.isPresent()) {
+                response.setStatus(true);
+                response.setCode("200");
+                response.setMessage("success");
+                response.setData(detailList.get());           
+                return new ResponseEntity<>(response ,HttpStatus.OK);
+            }else{
+                result =  tagsService.save(tags);
+                response.setStatus(true);
+                response.setCode("200");
+                response.setMessage("success");
+                response.setData(result);           
+                return new ResponseEntity<>(response ,HttpStatus.OK);
+            }
+
         }catch(Exception e){
             response.setStatus(false);
             response.setCode("500");
