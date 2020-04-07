@@ -7,8 +7,6 @@ import com.example.blog.repository.AuthorRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 @Service
 public class AuthorService{
@@ -19,8 +17,8 @@ public class AuthorService{
         this.authorRepository = authorRepository;
     }
 
-    public Page<Author> findAll(Pageable pageable){
-        return authorRepository.findAll(pageable);
+    public List<Author> findAll(){
+        return authorRepository.findAll();
     }
 
     public List<Author> findByName(String username){

@@ -29,8 +29,6 @@ public class Blog extends AuditModel implements Serializable  {
 
     private transient List<Long> tags_id;
 
-    private transient List<String> tags_name;
-
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id", nullable = false)
@@ -125,14 +123,6 @@ public class Blog extends AuditModel implements Serializable  {
 
     public void setTag(List<Tags> tag) {
         this.tag = tag;
-    }
-
-    public List<String> getTags_name() {
-        return tags_name;
-    }
-
-    public void setTags_name(List<String> tags_name) {
-        this.tags_name = tags_name;
     }
 
     

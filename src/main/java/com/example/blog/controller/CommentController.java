@@ -25,13 +25,11 @@ import javassist.NotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.blog.common.dto.request.DeleteDTO;
-import com.example.blog.common.dto.response.ResponseBaseDTO;
 import com.example.blog.model.Author;
 import com.example.blog.model.Blog;
 import com.example.blog.model.Categories;
 import com.example.blog.model.Comment;
-// import com.example.blog.model.ResponseBaseDTO;
+import com.example.blog.model.ResponseBaseDTO;
 
 @RestController
 @RequestMapping("/comments")
@@ -153,14 +151,13 @@ public class CommentController {
        
     }
 
-    @RequestMapping(value = "", method = RequestMethod.DELETE)
-    public  ResponseEntity<ResponseBaseDTO> delete(@RequestBody DeleteDTO request) throws NotFoundException {       
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public  ResponseEntity<ResponseBaseDTO> delete(@PathVariable(value = "id") Long id){       
        
         ResponseBaseDTO response = new ResponseBaseDTO(); 
-        Comment comment = commentRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException("Comment id " + request.getId() + " NotFound"));
-            
-        try{       
-            commentRepository.delete(comment);
+
+        try{         
+            commentService.deleteById(id);
             response.setStatus(true);
             response.setCode("200");
             response.setMessage("success");    
@@ -168,7 +165,7 @@ public class CommentController {
         }catch(Exception e){
             response.setStatus(false);
             response.setCode("500");
-            response.setMessage( "id " + request.getId() + " not exists! " );
+            response.setMessage( "id " + id + " not exists! " );
             return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
         }
       
