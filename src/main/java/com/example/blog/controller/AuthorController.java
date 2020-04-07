@@ -15,10 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javassist.NotFoundException;
 
-import com.example.blog.model.ResponseBaseDTO;
+// import com.example.blog.model.ResponseBaseDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.example.blog.common.dto.response.ResponseBaseDTO;
 import com.example.blog.model.Author;
 import com.example.blog.repository.AuthorRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/authors")
@@ -33,12 +37,12 @@ public class AuthorController {
     }
 
     @RequestMapping(value="", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> listAuthor(){
+    public ResponseEntity<ResponseBaseDTO> listAuthor(Pageable pageable){
         ResponseBaseDTO response = new ResponseBaseDTO();         
      
         try
         {         
-            List<Author> tags = authorRepository.findAll();
+            Page<Author> tags = authorRepository.findAll(pageable);
             response.setStatus(true);
             response.setCode("200");
             response.setMessage("success");

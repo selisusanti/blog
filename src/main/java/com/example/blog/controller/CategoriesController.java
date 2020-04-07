@@ -3,6 +3,8 @@ package com.example.blog.controller;
 import com.example.blog.service.CategoriesService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,12 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javassist.NotFoundException;
 
-import com.example.blog.model.ResponseBaseDTO;
+// import com.example.blog.model.ResponseBaseDTO;
 import com.example.blog.repository.CategoriesRepository;
 
 import java.util.List;
 import java.util.Optional;
 
+import com.example.blog.common.dto.request.DeleteDTO;
+import com.example.blog.common.dto.response.ResponseBaseDTO;
 import com.example.blog.model.Categories;
 
 @RestController
@@ -34,18 +38,18 @@ public class CategoriesController{
     private CategoriesRepository categoriesRepository;
 
     @RequestMapping(value="", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> listCategories(@RequestParam(required = false) String name){ 
+    public ResponseEntity<ResponseBaseDTO> listCategories(@RequestParam(required = false) String name, Pageable pageable){ 
         ResponseBaseDTO response = new ResponseBaseDTO(); 
         try
         {         
             if(name == null){
-                List<Categories> tagslist = categoriesService.findAll();
+                Page<Categories> tagslist = categoriesService.findAll(pageable);
                 response.setStatus(true);
                 response.setCode("200");
                 response.setMessage("success");
                 response.setData(tagslist);  
             }else{
-                List<Categories> tagslist = categoriesService.findByName(name);
+                Page<Categories> tagslist = categoriesService.findByNameContaining(name,pageable);
                 response.setStatus(true);
                 response.setCode("200");
                 response.setMessage("success");
@@ -107,13 +111,14 @@ public class CategoriesController{
        
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public  ResponseEntity<ResponseBaseDTO> delete(@PathVariable(value = "id") Long id){       
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    public  ResponseEntity<ResponseBaseDTO> delete(@RequestBody DeleteDTO request){       
        
         ResponseBaseDTO response = new ResponseBaseDTO(); 
-
-        try{         
-            categoriesService.deleteById(id);
+        
+        try{     
+            Categories categories = categoriesRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException("Comment id " + request.getId() + " NotFound"));
+            categoriesRepository.delete(categories);
             response.setStatus(true);
             response.setCode("200");
             response.setMessage("success");    
@@ -121,7 +126,7 @@ public class CategoriesController{
         }catch(Exception e){
             response.setStatus(false);
             response.setCode("500");
-            response.setMessage( "id " + id + " not exists! " );
+            response.setMessage( "id " + request.getId() + " not exists! " );
             return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
         }
       
