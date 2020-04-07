@@ -26,11 +26,12 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.blog.common.dto.request.DeleteDTO;
+import com.example.blog.common.dto.response.ResponseBaseDTO;
 import com.example.blog.model.Author;
 import com.example.blog.model.Blog;
 import com.example.blog.model.Categories;
 import com.example.blog.model.Comment;
-import com.example.blog.model.ResponseBaseDTO;
+// import com.example.blog.model.ResponseBaseDTO;
 
 @RestController
 @RequestMapping("/comments")

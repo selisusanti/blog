@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.blog.common.dto.request.DeleteDTO;
+import com.example.blog.common.dto.response.ResponseBaseDTO;
 
 import javassist.NotFoundException;
 
@@ -30,7 +31,7 @@ import java.util.Optional;
 import com.example.blog.model.Author;
 import com.example.blog.model.Blog;
 import com.example.blog.model.Categories;
-import com.example.blog.model.ResponseBaseDTO;
+// import com.example.blog.model.ResponseBaseDTO;
 import com.example.blog.model.Tags;
 
 @RestController

@@ -16,13 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javassist.NotFoundException;
 
-import com.example.blog.model.ResponseBaseDTO;
+// import com.example.blog.model.ResponseBaseDTO;
 import com.example.blog.repository.CategoriesRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 import com.example.blog.common.dto.request.DeleteDTO;
+import com.example.blog.common.dto.response.ResponseBaseDTO;
 import com.example.blog.model.Categories;
 
 @RestController

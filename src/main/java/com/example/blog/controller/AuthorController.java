@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javassist.NotFoundException;
 
-import com.example.blog.model.ResponseBaseDTO;
+// import com.example.blog.model.ResponseBaseDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.example.blog.common.dto.response.ResponseBaseDTO;
 import com.example.blog.model.Author;
 import com.example.blog.repository.AuthorRepository;
 import org.springframework.data.domain.Page;

@@ -3,7 +3,7 @@ package com.example.blog.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-public class ResponseBaseDTO<Any> {
+public class ResponseBaseDTO1<Any> {
 
  private boolean status = false;
  

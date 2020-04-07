@@ -3,8 +3,15 @@ package com.example.blog.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
+import com.example.blog.common.dto.MyPage;
+import com.example.blog.common.dto.MyPageable;
 import com.example.blog.common.dto.request.DeleteDTO;
-import com.example.blog.model.ResponseBaseDTO;
+import com.example.blog.common.dto.response.ResponseBaseDTO;
+import com.example.blog.common.dto.response.ResponseTagsDTO;
+import com.example.blog.common.dto.util.PageConverter;
+// import com.example.blog.model.ResponseBaseDTO;
 import com.example.blog.model.Tags;
 import com.example.blog.repository.TagsRepository;
 import com.example.blog.service.TagsService;
@@ -35,37 +42,48 @@ public class TagsController{
     private TagsRepository tagsRepository; 
 
     @RequestMapping(value="", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> listTags(@RequestParam(required = false) String name, Pageable pageable){ 
-        ResponseBaseDTO response = new ResponseBaseDTO(); 
-        try
-        {         
+    public ResponseBaseDTO<MyPage<ResponseTagsDTO>> listTags(
+        @RequestParam(required = false) String name, MyPageable pageable, HttpServletRequest request)
+    {
+        Page<ResponseTagsDTO> tagslist;
             if(name == null){
-                Page<Tags> tagslist = tagsService.findAll(pageable);
-                response.setStatus(true);
-                response.setCode("200");
-                response.setMessage("success");
-                response.setData(tagslist);  
-                  
-                return new ResponseEntity<>(response ,HttpStatus.OK);
+                tagslist = tagsService.findAll(MyPageable.convertToPageable(pageable));
             }else{
-                Page<Tags> tagslist = tagsService.findByNameContaining(name, pageable);
-                response.setStatus(true);
-                response.setCode("200");
-                response.setMessage("success");
-                response.setData(tagslist);  
-                  
-                return new ResponseEntity<>(response ,HttpStatus.OK);
+                tagslist = tagsService.findByNameContaining(name, MyPageable.convertToPageable(pageable));
             }
-        }
-        catch(Exception e)
-        {
+                
+            PageConverter<ResponseTagsDTO> converter = new PageConverter<>();
+            String url = String.format("%s://%s:%d/tags",request.getScheme(),  request.getServerName(), request.getServerPort());
+
+            String search = "";
+
+            if(name != null){
+                search += "&name="+name;
+            }
+            
+            MyPage<ResponseTagsDTO> outputdata = converter.convert(tagslist, url, search);
+            return ResponseBaseDTO.ok(outputdata);
+
+                // return new ResponseEntity<>(response ,HttpStatus.OK);
+            // }else{
+            //     tagslist = tagsService.findByNameContaining(name, MyPageable.convertToPageable(pageable));
+            //     response.setStatus(true);
+            //     response.setCode("200");
+            //     response.setMessage("success");
+            //     response.setData(tagslist);  
+                  
+            //     return new ResponseEntity<>(response ,HttpStatus.OK);
+            // }
+        // }
+        // catch(Exception e)
+        // {
             // catch error when get user
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage(e.getMessage());
-        }
+        //     response.setStatus(false);
+        //     response.setCode("500");
+        //     response.setMessage(e.getMessage());
+        // }
         
-        return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+        // return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
