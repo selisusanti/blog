@@ -19,43 +19,43 @@ public abstract class AuditModel implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreatedDate
-    private Date createdAt;
+    private Date created_at;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at", nullable = false)
     @LastModifiedDate
-    private Date updatedAt;
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    private Date updated_at;
 
     @PrePersist
     protected void prePersist() {
-        if (this.createdAt == null) createdAt = new Date();
-        if (this.updatedAt == null) updatedAt = new Date();
+        if (this.created_at == null) created_at = new Date();
+        if (this.updated_at == null) updated_at = new Date();
     }
 
     @PreUpdate
     protected void preUpdate() {
-        this.updatedAt = new Date();
+        this.updated_at = new Date();
     }
 
     @PreRemove
     protected void preRemove() {
-        this.updatedAt = new Date();
+        this.updated_at = new Date();
+    }
+
+    public Date getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(Date created_at) {
+        this.created_at = created_at;
+    }
+
+    public Date getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(Date updated_at) {
+        this.updated_at = updated_at;
     }
 
 
