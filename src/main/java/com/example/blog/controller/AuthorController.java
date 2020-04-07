@@ -3,6 +3,9 @@ package com.example.blog.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
@@ -18,9 +21,15 @@ import javassist.NotFoundException;
 // import com.example.blog.model.ResponseBaseDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.example.blog.common.dto.MyPage;
+import com.example.blog.common.dto.MyPageable;
+import com.example.blog.common.dto.response.ResponseAuthorDTO;
 import com.example.blog.common.dto.response.ResponseBaseDTO;
+import com.example.blog.common.dto.util.PageConverter;
 import com.example.blog.model.Author;
 import com.example.blog.repository.AuthorRepository;
+import com.example.blog.service.AuthorService;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -30,6 +39,9 @@ public class AuthorController {
 
     @Autowired
     AuthorRepository authorRepository;
+    
+    @Autowired
+    AuthorService authorService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -37,28 +49,16 @@ public class AuthorController {
     }
 
     @RequestMapping(value="", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> listAuthor(Pageable pageable){
-        ResponseBaseDTO response = new ResponseBaseDTO();         
-     
-        try
-        {         
-            Page<Author> tags = authorRepository.findAll(pageable);
-            response.setStatus(true);
-            response.setCode("200");
-            response.setMessage("success");
-            response.setData(tags);         
+    public ResponseBaseDTO<MyPage<ResponseAuthorDTO>> listAuthor(MyPageable pageable, HttpServletRequest request){
+        Page<ResponseAuthorDTO> authlist;
+        authlist = authorService.findAll(MyPageable.convertToPageable(pageable));
             
-            return new ResponseEntity<>(response ,HttpStatus.OK);
-        }
-        catch(Exception e)
-        {
-         // catch error when get user
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage(e.getMessage());
+        PageConverter<ResponseAuthorDTO> converter = new PageConverter<>();
+        String url = String.format("%s://%s:%d/authors",request.getScheme(),  request.getServerName(), request.getServerPort());
 
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        }
+        String search = "";
+        MyPage<ResponseAuthorDTO> outputdata = converter.convert(authlist, url, search);
+        return ResponseBaseDTO.ok(outputdata);
         
     }
 

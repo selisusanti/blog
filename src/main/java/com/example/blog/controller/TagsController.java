@@ -64,26 +64,6 @@ public class TagsController{
             MyPage<ResponseTagsDTO> outputdata = converter.convert(tagslist, url, search);
             return ResponseBaseDTO.ok(outputdata);
 
-                // return new ResponseEntity<>(response ,HttpStatus.OK);
-            // }else{
-            //     tagslist = tagsService.findByNameContaining(name, MyPageable.convertToPageable(pageable));
-            //     response.setStatus(true);
-            //     response.setCode("200");
-            //     response.setMessage("success");
-            //     response.setData(tagslist);  
-                  
-            //     return new ResponseEntity<>(response ,HttpStatus.OK);
-            // }
-        // }
-        // catch(Exception e)
-        // {
-            // catch error when get user
-        //     response.setStatus(false);
-        //     response.setCode("500");
-        //     response.setMessage(e.getMessage());
-        // }
-        
-        // return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
