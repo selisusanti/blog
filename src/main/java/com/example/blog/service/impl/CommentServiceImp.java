@@ -108,4 +108,32 @@ public class CommentServiceImp implements CommentService{
             throw e;
         }
     }
+
+    @Override
+    public ResponseCommentDTO deleteById(Long id) {
+        try {
+            ResponseCommentDTO response = new ResponseCommentDTO();
+
+            Blog blog = blogRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
+           
+            commentService.deleteAllByPostId(blog.getId());
+            return response;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+    }
+
+
+    @Override
+    public void deleteAllByPostId(Long id) {
+        try {
+            commentRepository.deleteAllPostByID(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+            
+    }
+
 }

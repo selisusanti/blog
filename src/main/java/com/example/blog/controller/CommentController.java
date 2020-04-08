@@ -64,4 +64,9 @@ public class CommentController {
         return ResponseBaseDTO.ok(CommentService.findByBlogId(blog, id));
     }
 
+    @RequestMapping(value = "/posts/{id}/comments", method = RequestMethod.DELETE)
+    public ResponseBaseDTO<ResponseCommentDTO> deleteComment(@PathVariable Long id) {
+        return ResponseBaseDTO.ok(CommentService.deleteById(id));
+    }
+
 }

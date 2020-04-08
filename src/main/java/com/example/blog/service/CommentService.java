@@ -10,10 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface CommentService {
-    // Optional<Comment> findByBlogId(Long id);
-    // Comment save(Comment comment);
     ResponseCommentDTO save(CommentDTO request, Long id);
     Page<ResponseCommentDTO> findAllByBlogId(Pageable pageable, Long id);
     Page<ResponseCommentDTO> findByName(Pageable pageable, String name);
     ResponseCommentDTO findByBlogId(Long blog,Long id);
+    ResponseCommentDTO deleteById(Long id);
+    void deleteAllByPostId (Long id);
 }
