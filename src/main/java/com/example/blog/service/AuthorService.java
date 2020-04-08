@@ -3,6 +3,7 @@ package com.example.blog.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.blog.common.dto.AuthorDTO;
 import com.example.blog.common.dto.response.ResponseAuthorDTO;
 import com.example.blog.model.Author;
 import com.example.blog.repository.AuthorRepository;
@@ -16,45 +17,51 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-@Slf4j
-@Service
-public class AuthorService{
-    private final AuthorRepository authorRepository;
+public interface AuthorService{
 
-    @Autowired
-    public AuthorService(AuthorRepository authorRepository){
-        this.authorRepository = authorRepository;
-    }
+    ResponseAuthorDTO save(AuthorDTO request);
+    // Page<ResponseCommentDTO> findAllByBlogId(Pageable pageable, Long id);
+    // Page<ResponseCommentDTO> findByName(Pageable pageable, String name);
+    // ResponseCommentDTO findByBlogId(Long blog,Long id);
+    // ResponseCommentDTO deleteById(Long id);
+    // void deleteAllByPostId (Long id);
 
-    private ResponseAuthorDTO fromEntity(Author author) {
-        ResponseAuthorDTO response = new ResponseAuthorDTO();
-        BeanUtils.copyProperties(author, response);
-        return response;
-    }
+    // private final AuthorRepository authorRepository;
 
-    public Page<ResponseAuthorDTO> findAll(Pageable pageable){
-        try {
-            return authorRepository.findAll(pageable).map(this::fromEntity);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw e;
-        }
-    }
+    // @Autowired
+    // public AuthorService(AuthorRepository authorRepository){
+    //     this.authorRepository = authorRepository;
+    // }
+
+    // private ResponseAuthorDTO fromEntity(Author author) {
+    //     ResponseAuthorDTO response = new ResponseAuthorDTO();
+    //     BeanUtils.copyProperties(author, response);
+    //     return response;
+    // }
+
+    // public Page<ResponseAuthorDTO> findAll(Pageable pageable){
+    //     try {
+    //         return authorRepository.findAll(pageable).map(this::fromEntity);
+    //     } catch (Exception e) {
+    //         log.error(e.getMessage(), e);
+    //         throw e;
+    //     }
+    // }
  
-    public List<Author> findByName(String username){
-        return authorRepository.findByUsername(username);
-    }
+    // public List<Author> findByName(String username){
+    //     return authorRepository.findByUsername(username);
+    // }
 
-    public Optional<Author> findById(Long id){
-        return authorRepository.findById(id);
-    }
+    // public Optional<Author> findById(Long id){
+    //     return authorRepository.findById(id);
+    // }
 
-    public Author save(Author author){
-        return authorRepository.save(author);
-    }
+    // public Author save(Author author){
+    //     return authorRepository.save(author);
+    // }
 
-    public void deleteById(Long id) {
-        authorRepository.deleteById(id);
-    }
+    // public void deleteById(Long id) {
+    //     authorRepository.deleteById(id);
+    // }
 
 }
