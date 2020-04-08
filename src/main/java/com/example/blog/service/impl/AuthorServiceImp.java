@@ -3,6 +3,7 @@ package com.example.blog.service.impl;
 import java.util.Date;
 
 import com.example.blog.common.dto.AuthorDTO;
+import com.example.blog.common.dto.AuthorPasswordDTO;
 import com.example.blog.common.dto.exception.ResourceNotFoundException;
 import com.example.blog.common.dto.request.DeleteDTO;
 import com.example.blog.common.dto.response.ResponseAuthorDTO;
@@ -105,10 +106,45 @@ public class AuthorServiceImp implements AuthorService {
     @Override
     public ResponseAuthorDTO deleteById(DeleteDTO request) {
         try {
-            Author authors = authorRepository.findById(request.getId()).orElseThrow(()->new ResourceNotFoundException(request.getId().toString(), FIELD, RESOURCE));
+            Author authors = authorRepository.findById(request.getId())
+                    .orElseThrow(() -> new ResourceNotFoundException(request.getId().toString(), FIELD, RESOURCE));
             authorRepository.deleteById(request.getId());
             return fromEntity(authors);
         } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
+    public ResponseAuthorDTO update(Long id, AuthorDTO request) {
+        try{
+            Author authors = authorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
+            authors.setFirst_name(request.getFirst_name());
+            authors.setLast_name(request.getLast_name());
+            authors.setUsername(request.getUsername());
+            authorRepository.save(authors);
+            return fromEntity(authors);
+        }catch(ResourceNotFoundException e){
+            log.error(e.getMessage(), e);
+            throw e;
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
+    public ResponseAuthorDTO updatePassword(Long id, AuthorPasswordDTO request) {
+        try{
+            Author authors = authorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
+            authors.setFirst_name(request.getPassword());
+            authorRepository.save(authors);
+            return fromEntity(authors);
+        }catch(ResourceNotFoundException e){
+            log.error(e.getMessage(), e);
+            throw e;
+        }catch (Exception e) {
             e.printStackTrace();
             throw e;
         }

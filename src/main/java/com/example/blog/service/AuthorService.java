@@ -1,5 +1,7 @@
 package com.example.blog.service;
 
+import com.example.blog.common.dto.AuthorDTO;
+import com.example.blog.common.dto.AuthorPasswordDTO;
 import com.example.blog.common.dto.request.DeleteDTO;
 import com.example.blog.common.dto.response.ResponseAuthorDTO;
 import com.example.blog.model.Author;
@@ -15,7 +17,8 @@ public interface AuthorService{
     Page<ResponseAuthorDTO> findByName(Pageable pageable, String param);
     ResponseAuthorDTO findById(Long id);
     ResponseAuthorDTO deleteById(DeleteDTO request);
-    // ResponseCommentDTO deleteById(Long id);
+    ResponseAuthorDTO update(Long id, AuthorDTO request);
+    ResponseAuthorDTO updatePassword(Long id, AuthorPasswordDTO request);
     // void deleteAllByPostId (Long id);
 
     // private final AuthorRepository authorRepository;

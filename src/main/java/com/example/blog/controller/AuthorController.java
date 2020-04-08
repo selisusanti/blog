@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.blog.common.dto.AuthorDTO;
+import com.example.blog.common.dto.AuthorPasswordDTO;
 import com.example.blog.common.dto.MyPage;
 import com.example.blog.common.dto.MyPageable;
 import com.example.blog.common.dto.request.DeleteDTO;
@@ -40,6 +41,16 @@ public class AuthorController {
     @RequestMapping(value = "/authors", method = RequestMethod.DELETE)
     public ResponseBaseDTO<ResponseAuthorDTO> deleteComment(@Valid @RequestBody DeleteDTO request) {
         return ResponseBaseDTO.ok(AuthorService.deleteById(request));
+    }
+
+    @RequestMapping(value = "/authors/{id}", method = RequestMethod.PUT)
+    public ResponseBaseDTO updateAuthors(@PathVariable Long id,@Valid @RequestBody AuthorDTO request) {
+        return ResponseBaseDTO.ok(AuthorService.update(id,request));
+    }
+
+    @RequestMapping(value = "/authors/{id}/password", method = RequestMethod.PUT)
+    public ResponseBaseDTO updateAuthors(@PathVariable Long id,@Valid @RequestBody AuthorPasswordDTO request) {
+        return ResponseBaseDTO.ok(AuthorService.updatePassword(id,request));
     }
 
 
