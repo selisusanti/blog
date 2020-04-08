@@ -59,5 +59,9 @@ public class CommentController {
  
     }
 
+    @RequestMapping(value = "/posts/{blog}/comments/{id}", method = RequestMethod.GET)
+    public ResponseBaseDTO<ResponseCommentDTO> getOneComment(@PathVariable Long blog, @PathVariable Long id) {
+        return ResponseBaseDTO.ok(CommentService.findByBlogId(blog, id));
+    }
 
 }

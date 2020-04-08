@@ -15,4 +15,5 @@ public interface CommentService {
     ResponseCommentDTO save(CommentDTO request, Long id);
     Page<ResponseCommentDTO> findAllByBlogId(Pageable pageable, Long id);
     Page<ResponseCommentDTO> findByName(Pageable pageable, String name);
+    ResponseCommentDTO findByBlogId(Long blog,Long id);
 }

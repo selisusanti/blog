@@ -12,10 +12,13 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    Optional<Comment> findByBlogId(Long id);
 
     Page<Comment> findAllByBlogId(Pageable pageable, Long id);
     
     @Query("select e from #{#entityName} e where e.content like %:param% ")
     Page<Comment> findByName(Pageable pageable, String param);
+
+
+    @Query("select e from #{#entityName} e where blog.id =:blog AND id =:id ")
+    Comment findByBlogId(Long blog, Long id);
 }

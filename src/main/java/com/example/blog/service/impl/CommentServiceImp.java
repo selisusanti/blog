@@ -92,13 +92,20 @@ public class CommentServiceImp implements CommentService{
         }
     }
 
-    // @Override
-    // public Comment save(Comment comment){
-    //     return commentRepository.save(comment);
-    // }
+    @Override
+    public ResponseCommentDTO findByBlogId(Long blog, Long id) {
+        try {
+            Comment comment = commentRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
+            
+            Comment res = commentRepository.findByBlogId(blog, id);
 
-    // public Comment update(Long id, Comment comment) {
-    //     comment.setId(id);
-    //     return commentRepository.save(comment);
-    // }
+            return fromEntity(res);
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+    }
 }
