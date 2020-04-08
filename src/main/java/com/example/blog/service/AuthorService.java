@@ -1,25 +1,11 @@
 package com.example.blog.service;
 
-import java.util.List;
-import java.util.Optional;
-
-import com.example.blog.common.dto.AuthorDTO;
 import com.example.blog.common.dto.response.ResponseAuthorDTO;
 import com.example.blog.model.Author;
-import com.example.blog.repository.AuthorRepository;
-
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 public interface AuthorService{
 
-    ResponseAuthorDTO save(AuthorDTO request);
+    ResponseAuthorDTO save(Author request);
     // Page<ResponseCommentDTO> findAllByBlogId(Pageable pageable, Long id);
     // Page<ResponseCommentDTO> findByName(Pageable pageable, String name);
     // ResponseCommentDTO findByBlogId(Long blog,Long id);

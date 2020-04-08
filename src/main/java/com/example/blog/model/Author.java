@@ -3,9 +3,14 @@ package com.example.blog.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import javax.persistence.*;
 
+
 @Entity
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "author")
 public class Author extends AuditModel{
 
     @Id

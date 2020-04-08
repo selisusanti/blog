@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.blog.common.dto.AuthorDTO;
 import com.example.blog.common.dto.response.ResponseBaseDTO;
+import com.example.blog.model.Author;
 import com.example.blog.service.AuthorService;
 
 @RestController
@@ -18,7 +19,7 @@ public class AuthorController {
     AuthorService AuthorService;
 
     @RequestMapping(value = "/authors", method = RequestMethod.POST)
-    public ResponseBaseDTO createAuthors(@Valid @RequestBody AuthorDTO request) {
+    public ResponseBaseDTO createAuthors(@Valid @RequestBody Author request) {
         return ResponseBaseDTO.ok(AuthorService.save(request));
     }
 

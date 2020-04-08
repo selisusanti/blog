@@ -40,7 +40,7 @@ public class AuthorServiceImp implements AuthorService {
     }
     
     @Override
-    public ResponseAuthorDTO save(AuthorDTO request) {
+    public ResponseAuthorDTO save(Author request) {
 
         try {
             Author author = new Author();
