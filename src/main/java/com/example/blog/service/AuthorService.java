@@ -1,14 +1,20 @@
 package com.example.blog.service;
 
+import com.example.blog.common.dto.request.DeleteDTO;
 import com.example.blog.common.dto.response.ResponseAuthorDTO;
 import com.example.blog.model.Author;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface AuthorService{
 
     ResponseAuthorDTO save(Author request);
     // Page<ResponseCommentDTO> findAllByBlogId(Pageable pageable, Long id);
-    // Page<ResponseCommentDTO> findByName(Pageable pageable, String name);
-    // ResponseCommentDTO findByBlogId(Long blog,Long id);
+    Page<ResponseAuthorDTO> findAll(Pageable pageable);
+    Page<ResponseAuthorDTO> findByName(Pageable pageable, String param);
+    ResponseAuthorDTO findById(Long id);
+    ResponseAuthorDTO deleteById(DeleteDTO request);
     // ResponseCommentDTO deleteById(Long id);
     // void deleteAllByPostId (Long id);
 
