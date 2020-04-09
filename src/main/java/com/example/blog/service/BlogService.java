@@ -2,6 +2,9 @@ package com.example.blog.service;
 
 import com.example.blog.common.dto.BlogDTO;
 import com.example.blog.common.dto.request.DeleteDTO;
+import com.example.blog.common.dto.response.BaseResponseDTO;
+import com.example.blog.common.dto.response.BlogResponse;
+import com.example.blog.common.dto.response.ResponseBaseDTO;
 import com.example.blog.common.dto.response.ResponseBlogDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +14,7 @@ public interface BlogService{
     Page<ResponseBlogDTO> findAll(Pageable pageable);
     // Page<ResponseBlogDTO> findByName(Pageable pageable, String param);
     ResponseBlogDTO findById(Long id);
-    // ResponseBlogDTO deleteById(DeleteDTO request);
+    BaseResponseDTO<BlogResponse> delete(DeleteDTO request);
     ResponseBlogDTO update(Long id, BlogDTO request);
     // Page<ResponseBlogDTO> findByCategoryId(Pageable pageable, Long id);
 

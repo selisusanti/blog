@@ -16,6 +16,8 @@ import com.example.blog.common.dto.BlogDTO;
 import com.example.blog.common.dto.MyPage;
 import com.example.blog.common.dto.MyPageable;
 import com.example.blog.common.dto.request.DeleteDTO;
+import com.example.blog.common.dto.response.BaseResponseDTO;
+import com.example.blog.common.dto.response.BlogResponse;
 import com.example.blog.common.dto.response.ResponseBaseDTO;
 import com.example.blog.common.dto.response.ResponseBlogDTO;
 import com.example.blog.common.dto.util.PageConverter;
@@ -74,6 +76,14 @@ public class BlogController {
     public ResponseBaseDTO<ResponseBlogDTO> getOne(@PathVariable Long id) {
         return ResponseBaseDTO.ok(blogService.findById(id));
     }
+
+    @RequestMapping(value = "/blogs", method = RequestMethod.DELETE)
+    public BaseResponseDTO<BlogResponse> deleteBlog(@RequestBody DeleteDTO request) {
+        return blogService.delete(request);
+    }
+
+
+    
 
 
 }

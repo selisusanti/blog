@@ -8,6 +8,10 @@ import java.util.Optional;
 import com.example.blog.common.dto.BlogDTO;
 import com.example.blog.common.dto.exception.ResourceNotFoundException;
 import com.example.blog.common.dto.request.DeleteDTO;
+import com.example.blog.common.dto.response.BaseResponseDTO;
+import com.example.blog.common.dto.response.BlogAuthorResponse;
+import com.example.blog.common.dto.response.BlogCategoriesResponse;
+import com.example.blog.common.dto.response.BlogResponse;
 import com.example.blog.common.dto.response.ResponseBlogDTO;
 import com.example.blog.model.Author;
 import com.example.blog.model.Blog;
@@ -135,6 +139,39 @@ public class BlogServiceImp implements BlogService {
             throw e;
         }
     }
+
+    @Override
+    public BaseResponseDTO<BlogResponse> delete(DeleteDTO request) {
+        try {
+            Blog blog = blogRepository.findById(request.getId())
+                    .orElseThrow(() -> new ResourceNotFoundException(request.getId().toString(), FIELD, RESOURCE));
+            blogRepository.deleteById(request.getId());
+
+            BlogResponse blogResponse = new BlogResponse();
+            blogResponse.setId(blog.getId());
+            blogResponse.setTitle(blog.getTitle());
+            blogResponse.setContent(blog.getContent());
+            blogResponse.setCreated_at(blog.getCreated_at());
+            blogResponse.setUpdated_at(blog.getUpdated_at());
+            
+            // Author
+            BlogAuthorResponse authorResponse = new BlogAuthorResponse();
+            authorResponse.setFirstname(blog.getAuthor().getFirst_name());
+            authorResponse.setLastname(blog.getAuthor().getLast_name());
+            blogResponse.setAuthor(authorResponse);
+
+            // Category
+            BlogCategoriesResponse categoriesResponse = new BlogCategoriesResponse();
+            categoriesResponse.setName(blog.getCategories().getName());
+            blogResponse.setCategories(categoriesResponse);
+            
+            return BaseResponseDTO.ok(blogResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return BaseResponseDTO.error("500", "Failed to delete post.");
+        }
+    }
+
 
 
 }
