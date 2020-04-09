@@ -12,7 +12,7 @@ public interface BlogService{
     // Page<ResponseBlogDTO> findByName(Pageable pageable, String param);
     // ResponseBlogDTO findById(Long id);
     // ResponseBlogDTO deleteById(DeleteDTO request);
-    // ResponseBlogDTO update(Long id, BlogDTO request);
+    ResponseBlogDTO update(Long id, BlogDTO request);
     // Page<ResponseBlogDTO> findByCategoryId(Pageable pageable, Long id);
 
 }

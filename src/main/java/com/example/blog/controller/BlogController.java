@@ -64,4 +64,11 @@ public class BlogController {
         return ResponseBaseDTO.ok(response);
 
     }
+
+    @RequestMapping(value = "/blogs/{id}", method = RequestMethod.PUT)
+    public ResponseBaseDTO updateBlog(@PathVariable Long id,@Valid @RequestBody BlogDTO request) {
+        return ResponseBaseDTO.ok(blogService.update(id,request));
+    }
+
+    
 }
