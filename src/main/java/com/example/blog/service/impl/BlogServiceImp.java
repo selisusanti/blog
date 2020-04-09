@@ -91,4 +91,15 @@ public class BlogServiceImp implements BlogService {
 
     }
 
+
+    @Override
+    public Page<ResponseBlogDTO> findAll(Pageable pageable) {
+        try {
+            return blogRepository.findAll(pageable).map(this::fromEntity);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+    }
+
 }

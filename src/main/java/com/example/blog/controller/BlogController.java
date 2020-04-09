@@ -38,4 +38,30 @@ public class BlogController {
     public ResponseBaseDTO createAuthors(@Valid @RequestBody BlogDTO request) {
         return ResponseBaseDTO.ok(blogService.save(request));
     }
+
+    @RequestMapping(value = "/blogs", method = RequestMethod.GET)
+    public ResponseBaseDTO getAuthors(MyPageable pageable, 
+        @RequestParam(required = false, name="title") String param,
+        @RequestParam(required = false, name="category_id") Long category_id,
+        @RequestParam(required = false, name="category_id") Long author_id,
+        @RequestParam(required = false, name="tags_name") Long tags_name, HttpServletRequest request
+    ){
+
+        Page<ResponseBlogDTO> blog;
+
+        blog = blogService.findAll(MyPageable.convertToPageable(pageable)); 
+        PageConverter<ResponseBlogDTO> converter = new PageConverter<>();
+       
+        String search = ""; 
+        String url = String.format("%s://%s:%d/blog/",request.getScheme(),  request.getServerName(), request.getServerPort());
+ 
+        if(param != null){
+            search += "&param="+param;
+        }
+ 
+        MyPage<ResponseBlogDTO> response = converter.convert(blog, url, search);
+ 
+        return ResponseBaseDTO.ok(response);
+
+    }
 }

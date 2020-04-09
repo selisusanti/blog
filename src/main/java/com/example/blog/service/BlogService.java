@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface BlogService{
     ResponseBlogDTO save(BlogDTO request);
-    // Page<ResponseBlogDTO> findAll(Pageable pageable);
+    Page<ResponseBlogDTO> findAll(Pageable pageable);
     // Page<ResponseBlogDTO> findByName(Pageable pageable, String param);
     // ResponseBlogDTO findById(Long id);
     // ResponseBlogDTO deleteById(DeleteDTO request);
