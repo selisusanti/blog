@@ -70,5 +70,10 @@ public class BlogController {
         return ResponseBaseDTO.ok(blogService.update(id,request));
     }
 
-    
+    @RequestMapping(value = "/blogs/{id}", method = RequestMethod.GET)
+    public ResponseBaseDTO<ResponseBlogDTO> getOne(@PathVariable Long id) {
+        return ResponseBaseDTO.ok(blogService.findById(id));
+    }
+
+
 }

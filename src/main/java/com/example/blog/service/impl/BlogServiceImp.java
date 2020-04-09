@@ -120,4 +120,21 @@ public class BlogServiceImp implements BlogService {
         }
     }
 
+
+    @Override
+    public ResponseBlogDTO findById(Long id) {
+        try {
+            Blog blog = blogRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
+            return fromEntity(blog);
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+    }
+
+
 }

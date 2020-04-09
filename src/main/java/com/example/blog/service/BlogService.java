@@ -10,7 +10,7 @@ public interface BlogService{
     ResponseBlogDTO save(BlogDTO request);
     Page<ResponseBlogDTO> findAll(Pageable pageable);
     // Page<ResponseBlogDTO> findByName(Pageable pageable, String param);
-    // ResponseBlogDTO findById(Long id);
+    ResponseBlogDTO findById(Long id);
     // ResponseBlogDTO deleteById(DeleteDTO request);
     ResponseBlogDTO update(Long id, BlogDTO request);
     // Page<ResponseBlogDTO> findByCategoryId(Pageable pageable, Long id);
