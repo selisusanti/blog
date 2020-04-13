@@ -43,22 +43,33 @@ public class BlogController {
 
     @RequestMapping(value = "/blogs", method = RequestMethod.GET)
     public ResponseBaseDTO getAuthors(MyPageable pageable, 
-        @RequestParam(required = false, name="title") String param,
+        @RequestParam(required = false, name="title") String title,
         @RequestParam(required = false, name="category_id") Long category_id,
-        @RequestParam(required = false, name="category_id") Long author_id,
+        @RequestParam(required = false, name="author_id") Long author_id,
         @RequestParam(required = false, name="tags_name") Long tags_name, HttpServletRequest request
     ){
 
         Page<ResponseBlogDTO> blog;
-
-        blog = blogService.findAll(MyPageable.convertToPageable(pageable)); 
+        if(title != null){
+            blog = blogService.findByTitle(MyPageable.convertToPageable(pageable),title); 
+        }else if(category_id != null){
+            blog = blogService.findByCategoriesId(MyPageable.convertToPageable(pageable),category_id); 
+        }else if(author_id != null){
+            blog = blogService.findByAuthorId(MyPageable.convertToPageable(pageable),author_id); 
+        }else{
+            blog = blogService.findAll(MyPageable.convertToPageable(pageable)); 
+        }
         PageConverter<ResponseBlogDTO> converter = new PageConverter<>();
        
         String search = ""; 
         String url = String.format("%s://%s:%d/blog/",request.getScheme(),  request.getServerName(), request.getServerPort());
  
-        if(param != null){
-            search += "&param="+param;
+        if(title != null){
+            search += "&title="+title;
+        }else if(category_id != null){
+            search += "&category_id="+category_id;
+        }else{
+            search += "&author_id="+author_id;
         }
  
         MyPage<ResponseBlogDTO> response = converter.convert(blog, url, search);

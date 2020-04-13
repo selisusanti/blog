@@ -106,6 +106,16 @@ public class BlogServiceImp implements BlogService {
         }
     }
 
+    @Override
+    public Page<ResponseBlogDTO> findByTitle(Pageable pageable, String title) {
+        try {
+            return blogRepository.findByTitle(pageable, title).map(this::fromEntity);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+    }
+
 
     @Override
     public ResponseBlogDTO update(Long id, BlogDTO request) {
@@ -169,6 +179,26 @@ public class BlogServiceImp implements BlogService {
         } catch (Exception e) {
             e.printStackTrace();
             return BaseResponseDTO.error("500", "Failed to delete post.");
+        }
+    }
+
+    @Override
+    public Page<ResponseBlogDTO> findByCategoriesId(Pageable pageable, Long id) {
+        try {
+            return blogRepository.findByCategoriesId(pageable, id).map(this::fromEntity);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    @Override
+    public Page<ResponseBlogDTO> findByAuthorId(Pageable pageable, Long author_id) {
+        try {
+            return blogRepository.findByAuthorId(pageable, author_id).map(this::fromEntity);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
         }
     }
 
