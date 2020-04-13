@@ -202,6 +202,16 @@ public class BlogServiceImp implements BlogService {
         }
     }
 
+    @Override
+    public Page<ResponseBlogDTO> findByTagsName(Pageable pageable, String tags_name) {
+        try {
+            return blogRepository.findByTagsName(pageable, tags_name).map(this::fromEntity);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+    }
+
 
 
 }

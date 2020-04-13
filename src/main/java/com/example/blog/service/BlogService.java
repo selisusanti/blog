@@ -15,6 +15,7 @@ public interface BlogService{
     Page<ResponseBlogDTO> findByTitle(Pageable pageable, String title);
     Page<ResponseBlogDTO> findByCategoriesId(Pageable pageable, Long category_id);
     Page<ResponseBlogDTO> findByAuthorId(Pageable pageable, Long author_id);
+    Page<ResponseBlogDTO> findByTagsName(Pageable pageable, String tags_name);
     ResponseBlogDTO findById(Long id);
     BaseResponseDTO<BlogResponse> delete(DeleteDTO request);
     ResponseBlogDTO update(Long id, BlogDTO request);

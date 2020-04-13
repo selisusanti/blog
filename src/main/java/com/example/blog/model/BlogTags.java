@@ -4,9 +4,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
@@ -25,14 +25,21 @@ public class BlogTags implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "tags_id", nullable = false)
+    // @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    // @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    // @JoinColumn(name = "tags_id", nullable = false)
+
+    @ManyToOne
+    @JoinColumn(name = "tags_id")
+    @JsonManagedReference
     private Tags tags;
     
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "blog_id", nullable = false)
+    // @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    // @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    // @JoinColumn(name = "blog_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "blog_id")
+    @JsonManagedReference
     private Blog blog;
 
     @JoinColumn(name = "created_at", updatable = false)
