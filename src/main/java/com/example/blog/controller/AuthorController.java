@@ -1,166 +1,85 @@
 package com.example.blog.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javassist.NotFoundException;
-
-// import com.example.blog.model.ResponseBaseDTO;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
+import com.example.blog.common.dto.AuthorDTO;
+import com.example.blog.common.dto.AuthorPasswordDTO;
+import com.example.blog.common.dto.MyPage;
+import com.example.blog.common.dto.MyPageable;
+import com.example.blog.common.dto.request.DeleteDTO;
+import com.example.blog.common.dto.response.ResponseAuthorDTO;
 import com.example.blog.common.dto.response.ResponseBaseDTO;
+import com.example.blog.common.dto.util.PageConverter;
 import com.example.blog.model.Author;
-import com.example.blog.repository.AuthorRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.example.blog.service.AuthorService;
 
 @RestController
-@RequestMapping("/authors")
 public class AuthorController {
-
+    
     @Autowired
-    AuthorRepository authorRepository;
+    AuthorService AuthorService;
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    @RequestMapping(value = "/authors", method = RequestMethod.POST)
+    public ResponseBaseDTO createAuthors(@Valid @RequestBody Author request) {
+        return ResponseBaseDTO.ok(AuthorService.save(request));
     }
 
-    @RequestMapping(value="", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> listAuthor(Pageable pageable){
-        ResponseBaseDTO response = new ResponseBaseDTO();         
-     
-        try
-        {         
-            Page<Author> tags = authorRepository.findAll(pageable);
-            response.setStatus(true);
-            response.setCode("200");
-            response.setMessage("success");
-            response.setData(tags);         
-            
-            return new ResponseEntity<>(response ,HttpStatus.OK);
-        }
-        catch(Exception e)
-        {
-         // catch error when get user
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage(e.getMessage());
+    @RequestMapping(value = "/authors/{id}", method = RequestMethod.GET)
+    public ResponseBaseDTO<ResponseAuthorDTO> getOne(@PathVariable Long id) {
+        return ResponseBaseDTO.ok(AuthorService.findById(id));
+    }
 
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        }
-        
+    @RequestMapping(value = "/authors", method = RequestMethod.DELETE)
+    public ResponseBaseDTO<ResponseAuthorDTO> deleteComment(@Valid @RequestBody DeleteDTO request) {
+        return ResponseBaseDTO.ok(AuthorService.deleteById(request));
+    }
+
+    @RequestMapping(value = "/authors/{id}", method = RequestMethod.PUT)
+    public ResponseBaseDTO updateAuthors(@PathVariable Long id,@Valid @RequestBody AuthorDTO request) {
+        return ResponseBaseDTO.ok(AuthorService.update(id,request));
+    }
+
+    @RequestMapping(value = "/authors/{id}/password", method = RequestMethod.PUT)
+    public ResponseBaseDTO updateAuthors(@PathVariable Long id,@Valid @RequestBody AuthorPasswordDTO request) {
+        return ResponseBaseDTO.ok(AuthorService.updatePassword(id,request));
     }
 
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<ResponseBaseDTO> create(@RequestBody Author authors){
-         
-        Author resultaAuthor = new Author();       
-        ResponseBaseDTO response = new ResponseBaseDTO(); 
+    @RequestMapping(value = "/authors", method = RequestMethod.GET)
+    public ResponseBaseDTO getAuthors(MyPageable pageable, 
+        @RequestParam(required = false) String param, HttpServletRequest request
+    ){
 
-        try
-        {         
-            authors.setPassword(passwordEncoder().encode(authors.getPassword()));  
-            resultaAuthor =  authorRepository.save(authors);
-            response.setStatus(true);
-            response.setCode("200");
-            response.setMessage("success");
-            response.setData(resultaAuthor);           
-            
-            return new ResponseEntity<>(response ,HttpStatus.OK);
+        Page<ResponseAuthorDTO> author;
+
+        if(param != null){
+            author = AuthorService.findByName(MyPageable.convertToPageable(pageable),param);
+        }else{
+            author = AuthorService.findAll(MyPageable.convertToPageable(pageable)); 
         }
-        catch(Exception e)
-        {
-         // catch error when get user
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage(e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        }
+        PageConverter<ResponseAuthorDTO> converter = new PageConverter<>();
        
-    }
+        String search = ""; 
+        String url = String.format("%s://%s:%d/authors/",request.getScheme(),  request.getServerName(), request.getServerPort());
 
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<ResponseBaseDTO> updateAuthor(@PathVariable("id") long id, @RequestBody Author authors) {
-       
-        ResponseBaseDTO response = new ResponseBaseDTO();
-
-        try {
-            Optional<Author> authorData = authorRepository.findById(id);
-            if (authorData.isPresent()) {
-                Author _author = authorData.get();
-                _author.setFirst_name(authors.getFirst_name());
-                _author.setLast_name(authors.getLast_name());
-                _author.setUsername(authors.getUsername());
-             
-                response.setStatus(true);
-                response.setCode("200");
-                response.setMessage("success");  
-                response.setData(authorRepository.save(_author));            
-                
-            }
-            return new ResponseEntity<>( response, HttpStatus.OK);
-          
-        } catch (Exception e) {
-            // catch error when get user
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage( "id " + id + " not exists! " );
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+ 
+        if(param != null){
+            search += "&param="+param;
         }
-       
+ 
+        MyPage<ResponseAuthorDTO> response = converter.convert(author, url, search);
+ 
+        return ResponseBaseDTO.ok(response);
+
     }
-    @RequestMapping(value = "/updatepassword/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<ResponseBaseDTO> updatePassword(@PathVariable("id") long id, @RequestBody Author authors) {
-       
-        ResponseBaseDTO response = new ResponseBaseDTO();
-
-        try {
-            Optional<Author> authorData = authorRepository.findById(id);
-            if (authorData.isPresent()) {
-                Author _author = authorData.get();
-                _author.setPassword(passwordEncoder().encode(authors.getPassword()));  
-             
-                response.setStatus(true);
-                response.setCode("200");
-                response.setMessage("success");  
-                response.setData(authorRepository.save(_author));            
-                
-            }
-            return new ResponseEntity<>( response, HttpStatus.OK);
-          
-        } catch (Exception e) {
-            // catch error when get user
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage( "id " + id + " not exists! " );
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        }
-       
-    }
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> getAuthorById(@PathVariable Long id) throws NotFoundException {
-        ResponseBaseDTO response = new ResponseBaseDTO<>();
-
-        Author authors = authorRepository.findById(id).orElseThrow(() -> new NotFoundException("Categories id " + id + " NotFound"));
-
-        response.setData(authors);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
 
 }

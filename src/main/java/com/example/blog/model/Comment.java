@@ -10,6 +10,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import lombok.Data;
+
+@Data
 @Entity
 @Table(name = "comment")
 public class Comment extends AuditModel {
@@ -19,8 +22,8 @@ public class Comment extends AuditModel {
 
     private transient Long blog_id;
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    // @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToOne()
     @JoinColumn(name = "blog_id", nullable = false)
     private Blog blog;
 
@@ -29,46 +32,5 @@ public class Comment extends AuditModel {
 
     @Column(columnDefinition = "TEXT")
     private String content;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Blog getBlog() {
-        return blog;
-    }
-
-    public void setBlog(Blog blog) {
-        this.blog = blog;
-    }
-
-    public String getGuest_email() {
-        return guest_email;
-    }
-
-    public void setGuest_email(String guest_email) {
-        this.guest_email = guest_email;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Long getBlog_id() {
-        return blog_id;
-    }
-
-    public void setBlog_id(Long blog_id) {
-        this.blog_id = blog_id;
-    }
-    
     
 }

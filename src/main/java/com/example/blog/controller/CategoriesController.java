@@ -22,143 +22,74 @@ import com.example.blog.repository.CategoriesRepository;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import com.example.blog.common.dto.CategoriesDTO;
+import com.example.blog.common.dto.MyPage;
+import com.example.blog.common.dto.MyPageable;
 import com.example.blog.common.dto.request.DeleteDTO;
 import com.example.blog.common.dto.response.ResponseBaseDTO;
+import com.example.blog.common.dto.response.ResponseCategoriesDTO;
+import com.example.blog.common.dto.util.PageConverter;
 import com.example.blog.model.Categories;
 
 @RestController
-@RequestMapping("/categories")
 public class CategoriesController{
 
     @Autowired
     private CategoriesService categoriesService;
 
-
+ 
     @Autowired
     private CategoriesRepository categoriesRepository;
 
-    @RequestMapping(value="", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> listCategories(@RequestParam(required = false) String name, Pageable pageable){ 
-        ResponseBaseDTO response = new ResponseBaseDTO(); 
-        try
-        {         
-            if(name == null){
-                Page<Categories> tagslist = categoriesService.findAll(pageable);
-                response.setStatus(true);
-                response.setCode("200");
-                response.setMessage("success");
-                response.setData(tagslist);  
-            }else{
-                Page<Categories> tagslist = categoriesService.findByNameContaining(name,pageable);
-                response.setStatus(true);
-                response.setCode("200");
-                response.setMessage("success");
-                response.setData(tagslist);  
-            }
-                  
-            return new ResponseEntity<>(response ,HttpStatus.OK);
-        }
-        catch(Exception e)
-        {
-            // catch error when get user
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage(e.getMessage());
-        }
-        
-        return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+    @RequestMapping(value = "/categories/{id}", method = RequestMethod.GET)
+    public ResponseBaseDTO<ResponseCategoriesDTO> getOne(@PathVariable Long id) {
+        return ResponseBaseDTO.ok(categoriesService.findById(id));
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> getCategoriesById(@PathVariable Long id) throws NotFoundException {
-        ResponseBaseDTO response = new ResponseBaseDTO<>();
-
-        Categories categories = categoriesRepository.findById(id).orElseThrow(() -> new NotFoundException("Categories id " + id + " NotFound"));
-
-        response.setData(categories);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    @RequestMapping(value = "/categories", method = RequestMethod.DELETE)
+    public ResponseBaseDTO<ResponseCategoriesDTO> deleteCategories(@Valid @RequestBody DeleteDTO request) {
+        return ResponseBaseDTO.ok(categoriesService.deleteById(request));
     }
 
+    @RequestMapping(value = "/categories", method = RequestMethod.POST)
+    public ResponseBaseDTO createCategories(@Valid @RequestBody CategoriesDTO request) {
+        return ResponseBaseDTO.ok(categoriesService.save(request));
+    }
 
+    @RequestMapping(value = "/categories/{id}", method = RequestMethod.PUT)
+    public ResponseBaseDTO updateCategories(@PathVariable Long id,@Valid @RequestBody CategoriesDTO request) {
+        return ResponseBaseDTO.ok(categoriesService.update(id,request));
+    }
 
+    @RequestMapping(value = "/categories", method = RequestMethod.GET)
+    public ResponseBaseDTO getCategories(MyPageable pageable, 
+        @RequestParam(required = false) String param, HttpServletRequest request
+    ){
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<ResponseBaseDTO> createCategories(@RequestBody Categories categories){
-        
-        Categories result = new Categories();
-        ResponseBaseDTO response = new ResponseBaseDTO(); 
+        Page<ResponseCategoriesDTO> categories;
 
-        if(categories.getName().isEmpty() )
-        {
-            response.setMessage("name is null");
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+        if(param != null){
+            categories = categoriesService.findByName(MyPageable.convertToPageable(pageable),param);
+        }else{
+            categories = categoriesService.findAll(MyPageable.convertToPageable(pageable)); 
         }
-        
-        try{
-            result =  categoriesService.save(categories);
-            response.setStatus(true);
-            response.setCode("200");
-            response.setMessage("success");
-            response.setData(result);           
-            return new ResponseEntity<>(response ,HttpStatus.OK);
-        }catch(Exception e){
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage(e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        }
+        PageConverter<ResponseCategoriesDTO> converter = new PageConverter<>();
        
-    }
+        String search = ""; 
+        String url = String.format("%s://%s:%d/categories/",request.getScheme(),  request.getServerName(), request.getServerPort());
 
-    @RequestMapping(value = "", method = RequestMethod.DELETE)
-    public  ResponseEntity<ResponseBaseDTO> delete(@RequestBody DeleteDTO request){       
-       
-        ResponseBaseDTO response = new ResponseBaseDTO(); 
-        
-        try{     
-            Categories categories = categoriesRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException("Comment id " + request.getId() + " NotFound"));
-            categoriesRepository.delete(categories);
-            response.setStatus(true);
-            response.setCode("200");
-            response.setMessage("success");    
-            return new ResponseEntity<>(response ,HttpStatus.OK);
-        }catch(Exception e){
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage( "id " + request.getId() + " not exists! " );
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+ 
+        if(param != null){
+            search += "&param="+param;
         }
-      
-    }
+ 
+        MyPage<ResponseCategoriesDTO> response = converter.convert(categories, url, search);
+ 
+        return ResponseBaseDTO.ok(response);
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<ResponseBaseDTO> updateCategories(@PathVariable("id") long id, @RequestBody Categories categories) {
-     
-        ResponseBaseDTO response = new ResponseBaseDTO();
-        try {
-            Optional<Categories> categoriesData = categoriesService.findById(id);
-            if (categoriesData.isPresent()) {
-                Categories _categoriesData = categoriesData.get();
-                _categoriesData.setName(categories.getName());
-
-                // userData = userService.save(_user)
-                response.setStatus(true);
-                response.setCode("200");
-                response.setMessage("success");  
-                response.setData(categoriesService.save(_categoriesData));            
-                
-            }
-            return new ResponseEntity<>( response, HttpStatus.OK);
-          
-        } catch (Exception e) {
-            // catch error when get user
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage( "id " + id + " not exists! " );
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        }
-       
     }
 
 }

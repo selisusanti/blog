@@ -31,15 +31,28 @@ public class Blog extends AuditModel implements Serializable  {
 
     private transient List<String> tags_name;
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "author_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    @JsonManagedReference
     private Author author;
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "categories_id", nullable = false)
+
+    // @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    // // @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    // @ManyToMany
+    // @JoinColumn(name = "author_id", nullable = false)
+    // private Author author;
+
+    @ManyToOne
+    @JoinColumn(name = "categories_id")
+    @JsonManagedReference
     private Categories categories;
+
+    // @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    // // @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    // @ManyToMany
+    // @JoinColumn(name = "categories_id", nullable = false)
+    // private Categories categories;
 
     @Size(max = 150)
     private String title;
@@ -47,7 +60,8 @@ public class Blog extends AuditModel implements Serializable  {
     @Column(columnDefinition = "TEXT")
     private String content;
     
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    // @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany
     @JoinTable(
         name = "blog_tags", 
         joinColumns = { @JoinColumn(name = "blog_id") }, 

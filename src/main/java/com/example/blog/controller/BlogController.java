@@ -1,41 +1,32 @@
 package com.example.blog.controller;
 
-import com.example.blog.repository.AuthorRepository;
 import com.example.blog.repository.BlogRepository;
-import com.example.blog.repository.CategoriesRepository;
-import com.example.blog.repository.TagsRepository;
-import com.example.blog.service.AuthorService;
 import com.example.blog.service.BlogService;
-import com.example.blog.service.CategoriesService;
-import com.example.blog.service.TagsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.blog.common.dto.BlogDTO;
+import com.example.blog.common.dto.MyPage;
+import com.example.blog.common.dto.MyPageable;
 import com.example.blog.common.dto.request.DeleteDTO;
+import com.example.blog.common.dto.response.BaseResponseDTO;
+import com.example.blog.common.dto.response.BlogResponse;
 import com.example.blog.common.dto.response.ResponseBaseDTO;
+import com.example.blog.common.dto.response.ResponseBlogDTO;
+import com.example.blog.common.dto.util.PageConverter;
 
-import javassist.NotFoundException;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import com.example.blog.model.Author;
-import com.example.blog.model.Blog;
-import com.example.blog.model.Categories;
-// import com.example.blog.model.ResponseBaseDTO;
-import com.example.blog.model.Tags;
 
 @RestController
-@RequestMapping("/blogs")
 public class BlogController {
 
 
@@ -45,177 +36,69 @@ public class BlogController {
     @Autowired
     BlogService blogService;
 
-    @Autowired
-    TagsRepository tagsRepository; 
-
-    @Autowired
-    TagsService tagsService; 
-
-    @Autowired
-    CategoriesService categoriesService;
-
-    @Autowired
-    AuthorService authorService;
-
-    @Autowired
-    AuthorRepository authorRepository;
-
-    @Autowired
-    CategoriesRepository categoriesRepository;
-
-    @RequestMapping(value="", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> ListBlog(Pageable pageable){
-        ResponseBaseDTO response = new ResponseBaseDTO();         
-        
-        try
-        {         
-            Page<Blog> blogs = blogService.findAll(pageable);
-            response.setStatus(true);
-            response.setCode("200");
-            response.setMessage("success");
-            response.setData(blogs);         
-            
-            return new ResponseEntity<>(response ,HttpStatus.OK);
-        }
-        catch(Exception e)
-        {
-         // catch error when get user
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage(e.getMessage());
-
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        }        
+    @RequestMapping(value = "/blogs", method = RequestMethod.POST)
+    public ResponseBaseDTO createAuthors(@Valid @RequestBody BlogDTO request) {
+        return ResponseBaseDTO.ok(blogService.save(request));
     }
 
+    @RequestMapping(value = "/blogs", method = RequestMethod.GET)
+    public ResponseBaseDTO getAuthors(MyPageable pageable, 
+        @RequestParam(required = false, name="title") String title,
+        @RequestParam(required = false, name="category_id") Long category_id,
+        @RequestParam(required = false, name="author_id") Long author_id,
+        @RequestParam(required = false, name="tag") String tag, HttpServletRequest request
+    ){
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<ResponseBaseDTO> getBlogById(@PathVariable("id") long id) {
-
-        ResponseBaseDTO response = new ResponseBaseDTO(); 
-        try
-        {             
-            Optional<Blog> blog = blogService.findById(id); 
-            if (blog.isPresent()) {           
-                response.setStatus(true);
-                response.setCode("200");
-                response.setMessage("success");
-                response.setData(blog);     
-                
-            }
-            return new ResponseEntity<>( response, HttpStatus.OK);
+        Page<ResponseBlogDTO> blog;
+        if(title != null){
+            blog = blogService.findByTitle(MyPageable.convertToPageable(pageable),title); 
+        }else if(category_id != null){
+            blog = blogService.findByCategoriesId(MyPageable.convertToPageable(pageable),category_id); 
+        }else if(author_id != null){
+            blog = blogService.findByAuthorId(MyPageable.convertToPageable(pageable),author_id); 
+        }else if(tag != null){
+            blog = blogService.findByTagsName(MyPageable.convertToPageable(pageable),tag); 
+        }else{
+            blog = blogService.findAll(MyPageable.convertToPageable(pageable)); 
         }
-        catch(Exception e)
-        {
-            // catch error when get user
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage(e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        }
-    }
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<ResponseBaseDTO> updateBlog(@PathVariable("id") long id, @RequestBody Blog blog) throws NotFoundException{
+        PageConverter<ResponseBlogDTO> converter = new PageConverter<>();
        
-        ResponseBaseDTO response = new ResponseBaseDTO();
-        Blog _blog       = blogRepository.findById(id).orElseThrow(() -> new NotFoundException("Blog id " + id + " NotFound"));
-          
-        try {
-            
-                _blog.setTitle(blog.getTitle());
-                _blog.setContent(blog.getContent());
-
-                response.setStatus(true);
-                response.setCode("200");
-                response.setMessage("success");  
-                response.setData(blogService.update(id, _blog));     
-
-                return new ResponseEntity<>( response, HttpStatus.OK);
-          
-        } catch (Exception e) {
-            // catch error when get user
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage( "id " + id + " not exists! " );
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        }
-       
-    }
-
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<ResponseBaseDTO> createBlog(@RequestBody Blog blog) throws NotFoundException{
-        
-        // Blog result = new Blog();
-        ResponseBaseDTO response = new ResponseBaseDTO(); 
-        Author author = authorRepository.findById(blog.getAuthor_id()).orElseThrow(() -> new NotFoundException("Author id " + blog.getAuthor_id() + " NotFound"));
-        Categories categories = categoriesRepository.findById(blog.getCategories_id()).orElseThrow(() -> new NotFoundException("Categories id " + blog.getCategories_id() + " NotFound"));  
-
-
-        List<String> tagname = blog.getTags_name();
-        ArrayList<Tags> tags = new ArrayList<Tags>();
-
-        for (String tag : tagname) {
-            Optional<Tags> detailList = tagsService.findByName(tag);
-            if (detailList.isPresent()) {
-                Tags val = tagsRepository.findByName(tag).orElseThrow(() -> new NotFoundException("Tags name " + tag + " NotFound"));
-                tags.add(val);
-            }else{
-                Tags newtags = new Tags();
-                newtags.setName(tag);
-                Tags tagssave = tagsRepository.save(newtags);
-                tags.add(tagssave);
-            }
-        }
-        // List<Long> tagtag = blog.getTags_id();
-        // ArrayList<Tags> tags = new ArrayList<Tags>();
-
-        // for (Long tag : tagtag) {
-        //     Tags val = tagsRepository.findById(tag).orElseThrow(() -> new NotFoundException("Tags id " + tag + " NotFound"));
-        //     tags.add(val);
-        // }
-
-
-        
-
-        blog.setAuthor(author);
-        blog.setCategories(categories);
-        blog.setTag(tags);
-        
-        try{
-            response.setStatus(true);
-            response.setCode("200");
-            response.setMessage("success");
-            response.setData(blogService.save(blog));           
-            return new ResponseEntity<>(response ,HttpStatus.OK);
-        }catch(Exception e){
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage(e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        }
-       
-    }
-
-    @RequestMapping(value = "", method = RequestMethod.DELETE)
-    public  ResponseEntity<ResponseBaseDTO> delete(@RequestBody DeleteDTO request){       
-       
-        ResponseBaseDTO response = new ResponseBaseDTO(); 
+        String search = ""; 
+        String url = String.format("%s://%s:%d/blog/",request.getScheme(),  request.getServerName(), request.getServerPort());
  
-        try{         
-            Blog blog = blogRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException("Comment id " + request.getId() + " NotFound"));
-            blogRepository.delete(blog);
-            response.setStatus(true);
-            response.setCode("200");
-            response.setMessage("success");    
-            return new ResponseEntity<>(response ,HttpStatus.OK);
-        }catch(Exception e){
-            response.setStatus(false);
-            response.setCode("500");
-            response.setMessage( "id " + request.getId() + " not exists! " );
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+        if(title != null){
+            search += "&title="+title;
+        }else if(category_id != null){
+            search += "&category_id="+category_id;
+        }else if(tag != null){
+            search += "&tag="+tag;
+        }else{
+            search += "&author_id="+author_id;
         }
-      
+ 
+        MyPage<ResponseBlogDTO> response = converter.convert(blog, url, search);
+ 
+        return ResponseBaseDTO.ok(response);
+
     }
+
+    @RequestMapping(value = "/blogs/{id}", method = RequestMethod.PUT)
+    public ResponseBaseDTO updateBlog(@PathVariable Long id,@Valid @RequestBody BlogDTO request) {
+        return ResponseBaseDTO.ok(blogService.update(id,request));
+    }
+
+    @RequestMapping(value = "/blogs/{id}", method = RequestMethod.GET)
+    public ResponseBaseDTO<ResponseBlogDTO> getOne(@PathVariable Long id) {
+        return ResponseBaseDTO.ok(blogService.findById(id));
+    }
+
+    @RequestMapping(value = "/blogs", method = RequestMethod.DELETE)
+    public BaseResponseDTO<BlogResponse> deleteBlog(@RequestBody DeleteDTO request) {
+        return blogService.delete(request);
+    }
+
+
+    
 
 
 }
