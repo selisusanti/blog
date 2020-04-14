@@ -46,7 +46,7 @@ public class BlogController {
         @RequestParam(required = false, name="title") String title,
         @RequestParam(required = false, name="category_id") Long category_id,
         @RequestParam(required = false, name="author_id") Long author_id,
-        @RequestParam(required = false, name="tags_name") String tags_name, HttpServletRequest request
+        @RequestParam(required = false, name="tag") String tag, HttpServletRequest request
     ){
 
         Page<ResponseBlogDTO> blog;
@@ -56,8 +56,8 @@ public class BlogController {
             blog = blogService.findByCategoriesId(MyPageable.convertToPageable(pageable),category_id); 
         }else if(author_id != null){
             blog = blogService.findByAuthorId(MyPageable.convertToPageable(pageable),author_id); 
-        }else if(tags_name != null){
-            blog = blogService.findByTagsName(MyPageable.convertToPageable(pageable),tags_name); 
+        }else if(tag != null){
+            blog = blogService.findByTagsName(MyPageable.convertToPageable(pageable),tag); 
         }else{
             blog = blogService.findAll(MyPageable.convertToPageable(pageable)); 
         }
@@ -70,6 +70,8 @@ public class BlogController {
             search += "&title="+title;
         }else if(category_id != null){
             search += "&category_id="+category_id;
+        }else if(tag != null){
+            search += "&tag="+tag;
         }else{
             search += "&author_id="+author_id;
         }

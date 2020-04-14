@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Repository("mysql")
 public interface BlogRepository extends JpaRepository<Blog, Long> {
 	Page<Blog> findAll(Pageable pageable);
 
@@ -26,4 +26,5 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
     +"join tags on tags.id = blog_tags.tags_id "
     +"where tags.name = :tags_name ", nativeQuery = true)
     Page<Blog> findByTagsName(Pageable pageable, String tags_name);
+
 }

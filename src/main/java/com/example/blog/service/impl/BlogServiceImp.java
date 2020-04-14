@@ -22,6 +22,7 @@ import com.example.blog.repository.BlogRepository;
 import com.example.blog.repository.CategoriesRepository;
 import com.example.blog.repository.TagsRepository;
 import com.example.blog.service.BlogService;
+import com.example.blog.service.BlogTagsService;
 import com.example.blog.service.TagsService;
 
 import org.springframework.beans.BeanUtils;
@@ -45,6 +46,8 @@ public class BlogServiceImp implements BlogService {
     private TagsRepository tagsRepository;
     @Autowired
     private BlogRepository blogRepository;
+    @Autowired
+    private BlogTagsService blogTagsService;
 
     private static final String RESOURCE = "Blog";
     private static final String FIELD = "id";
@@ -120,9 +123,31 @@ public class BlogServiceImp implements BlogService {
     @Override
     public ResponseBlogDTO update(Long id, BlogDTO request) {
         try{
+            blogTagsService.deleteBlogTagsByBlogId(id);
+            Categories categories = categoriesRepository.findById(request.getCategories_id()).orElseThrow(() -> new ResourceNotFoundException(request.getCategories_id().toString(), FIELD, RESOURCE)); 
             Blog blog = blogRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
+             
+            List<String> tagname = request.getTags_name();
+            ArrayList<Tags> tags = new ArrayList<Tags>();
+
+            for (String tag : tagname) {
+                Optional<Tags> detailList = tagsRepository.findByName(tag);
+                if (detailList.isPresent()) {
+                    Tags val = tagsRepository.findByName(tag).orElseThrow(() -> new ResourceNotFoundException(tag.toString(), FIELD, RESOURCE)); 
+                    tags.add(val);
+                }else{
+                    Tags newtags = new Tags();
+                    newtags.setName(tag);
+                    Tags tagssave = tagsRepository.save(newtags);
+                    tags.add(tagssave);
+                }
+            }
+
             blog.setTitle(request.getTitle());
             blog.setContent(request.getContent());
+            blog.setCategories(categories);
+            blog.setTag(tags);
+
             blogRepository.save(blog);
             return fromEntity(blog);
         }catch(ResourceNotFoundException e){
@@ -211,7 +236,5 @@ public class BlogServiceImp implements BlogService {
             throw e;
         }
     }
-
-
 
 }
