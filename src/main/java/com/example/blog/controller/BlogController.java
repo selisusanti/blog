@@ -2,15 +2,20 @@ package com.example.blog.controller;
 
 import com.example.blog.repository.BlogRepository;
 import com.example.blog.service.BlogService;
+import com.example.blog.service.FileStorageService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.blog.common.dto.BlogDTO;
 import com.example.blog.common.dto.MyPage;
@@ -22,8 +27,13 @@ import com.example.blog.common.dto.response.ResponseBaseDTO;
 import com.example.blog.common.dto.response.ResponseBlogDTO;
 import com.example.blog.common.dto.util.PageConverter;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import org.springframework.core.io.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @RestController
@@ -34,11 +44,45 @@ public class BlogController {
     BlogRepository blogRepository;
 
     @Autowired
+    FileStorageService fileStorageService;
+
+    @Autowired
     BlogService blogService;
+
+    private static final Logger logger = LoggerFactory.getLogger(BlogController.class);
 
     @RequestMapping(value = "/blogs", method = RequestMethod.POST)
     public ResponseBaseDTO createAuthors(@Valid @RequestBody BlogDTO request) {
         return ResponseBaseDTO.ok(blogService.save(request));
+    } 
+    
+    @RequestMapping(value = "/uploadFile/{id}", method = RequestMethod.POST)
+    public ResponseBaseDTO uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("id") Long id) {
+        return ResponseBaseDTO.ok(fileStorageService.storeFile(file, id));
+    }
+
+    @RequestMapping(value = "/downloadFile/{fileName:.+}", method = RequestMethod.GET)
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+        System.out.println(fileName);
+        Resource resource = fileStorageService.loadFileAsResource(fileName);
+        System.out.println(resource);
+        // Try to determine file's content type
+        String contentType = null;
+        try {
+            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+            logger.info("Could not determine file type.");
+        }
+
+        // Fallback to the default content type if type could not be determined
+        if(contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
     }
 
     @RequestMapping(value = "/blogs", method = RequestMethod.GET)
