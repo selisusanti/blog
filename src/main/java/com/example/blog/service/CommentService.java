@@ -2,8 +2,8 @@ package com.example.blog.service;
 
 import java.util.Optional;
 
-import com.example.blog.common.dto.CommentDTO;
-import com.example.blog.common.dto.response.ResponseCommentDTO;
+import com.example.blog.dto.request.CommentDTO;
+import com.example.blog.dto.response.ResponseCommentDTO;
 import com.example.blog.model.Comment;
 
 import org.springframework.data.domain.Page;

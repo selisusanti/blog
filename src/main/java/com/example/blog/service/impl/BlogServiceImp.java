@@ -5,14 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.blog.common.dto.BlogDTO;
-import com.example.blog.common.dto.exception.ResourceNotFoundException;
-import com.example.blog.common.dto.request.DeleteDTO;
-import com.example.blog.common.dto.response.BaseResponseDTO;
-import com.example.blog.common.dto.response.BlogAuthorResponse;
-import com.example.blog.common.dto.response.BlogCategoriesResponse;
-import com.example.blog.common.dto.response.BlogResponse;
-import com.example.blog.common.dto.response.ResponseBlogDTO;
 import com.example.blog.model.Author;
 import com.example.blog.model.Blog;
 import com.example.blog.model.Categories;
@@ -23,7 +15,14 @@ import com.example.blog.repository.CategoriesRepository;
 import com.example.blog.repository.TagsRepository;
 import com.example.blog.service.BlogService;
 import com.example.blog.service.BlogTagsService;
-import com.example.blog.service.TagsService;
+import com.example.blog.exception.ResourceNotFoundException;
+import com.example.blog.dto.request.BlogDTO;
+import com.example.blog.dto.request.DeleteDTO;
+import com.example.blog.dto.response.BlogAuthorResponse;
+import com.example.blog.dto.response.BlogCategoriesResponse;
+import com.example.blog.dto.response.BlogResponse;
+import com.example.blog.dto.response.ResponseBaseDTO;
+import com.example.blog.dto.response.ResponseBlogDTO;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -176,7 +174,7 @@ public class BlogServiceImp implements BlogService {
     }
 
     @Override
-    public BaseResponseDTO<BlogResponse> delete(DeleteDTO request) {
+    public ResponseBaseDTO<BlogResponse> delete(DeleteDTO request) {
         try {
             Blog blog = blogRepository.findById(request.getId())
                     .orElseThrow(() -> new ResourceNotFoundException(request.getId().toString(), FIELD, RESOURCE));
@@ -200,10 +198,10 @@ public class BlogServiceImp implements BlogService {
             categoriesResponse.setName(blog.getCategories().getName());
             blogResponse.setCategories(categoriesResponse);
             
-            return BaseResponseDTO.ok(blogResponse);
+            return ResponseBaseDTO.ok(blogResponse);
         } catch (Exception e) {
             e.printStackTrace();
-            return BaseResponseDTO.error("500", "Failed to delete post.");
+            return ResponseBaseDTO.error("500", "Failed to delete post.");
         }
     }
 

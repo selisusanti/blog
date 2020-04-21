@@ -1,4 +1,4 @@
-package com.example.blog.common.dto.request;
+package com.example.blog.dto.request;
 
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;

@@ -1,4 +1,4 @@
-package com.example.blog.common.dto.util;
+package com.example.blog.dto.util;
 
 import java.util.Date;
 

@@ -1,19 +1,32 @@
 package com.example.blog.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-@ResponseStatus(HttpStatus.NOT_FOUND)
+/**
+ * resourceNotFoundException
+ */
 public class ResourceNotFoundException extends RuntimeException {
-    public ResourceNotFoundException() {
-        super();
+    /**
+     *
+     */
+    private static final long serialVersionUID = -3893065755576061342L;
+    private String fieldValue;
+    private String fieldName;
+    private String resource;
+
+    public ResourceNotFoundException(String fieldValue, String fieldName, String resource) {
+        this.fieldValue = fieldValue;
+        this.fieldName = fieldName;
+        this.resource = resource;
     }
 
-    public ResourceNotFoundException(String message) {
-        super(message);
+    public String getFieldValue() {
+        return fieldValue;
     }
 
-    public ResourceNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public String getResource() {
+        return resource;
     }
 }

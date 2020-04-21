@@ -11,14 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.blog.common.dto.AuthorDTO;
-import com.example.blog.common.dto.AuthorPasswordDTO;
-import com.example.blog.common.dto.MyPage;
-import com.example.blog.common.dto.MyPageable;
-import com.example.blog.common.dto.request.DeleteDTO;
-import com.example.blog.common.dto.response.ResponseAuthorDTO;
-import com.example.blog.common.dto.response.ResponseBaseDTO;
-import com.example.blog.common.dto.util.PageConverter;
+
+import com.example.blog.dto.MyPage;
+import com.example.blog.dto.MyPageable;
+import com.example.blog.dto.request.AuthorDTO;
+import com.example.blog.dto.request.AuthorPasswordDTO;
+import com.example.blog.dto.request.DeleteDTO;
+import com.example.blog.dto.response.ResponseAuthorDTO;
+import com.example.blog.dto.response.ResponseBaseDTO;
+import com.example.blog.dto.util.PageConverter;
 import com.example.blog.model.Author;
 import com.example.blog.service.AuthorService;
 

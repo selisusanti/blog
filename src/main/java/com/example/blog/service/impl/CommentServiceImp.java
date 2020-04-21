@@ -5,9 +5,9 @@ import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
-import com.example.blog.common.dto.CommentDTO;
-import com.example.blog.common.dto.exception.ResourceNotFoundException;
-import com.example.blog.common.dto.response.ResponseCommentDTO;
+import com.example.blog.dto.request.CommentDTO;
+import com.example.blog.dto.response.ResponseCommentDTO;
+import com.example.blog.exception.ResourceNotFoundException;
 import com.example.blog.model.Blog;
 import com.example.blog.model.Comment;
 import com.example.blog.repository.BlogRepository;

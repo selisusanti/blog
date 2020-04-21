@@ -2,10 +2,10 @@ package com.example.blog.service.impl;
 
 import java.util.Date;
 
-import com.example.blog.common.dto.CategoriesDTO;
-import com.example.blog.common.dto.exception.ResourceNotFoundException;
-import com.example.blog.common.dto.request.DeleteDTO;
-import com.example.blog.common.dto.response.ResponseCategoriesDTO;
+import com.example.blog.dto.request.CategoriesDTO;
+import com.example.blog.dto.request.DeleteDTO;
+import com.example.blog.dto.response.ResponseCategoriesDTO;
+import com.example.blog.exception.ResourceNotFoundException;
 import com.example.blog.model.Categories;
 import com.example.blog.repository.CategoriesRepository;
 import com.example.blog.service.CategoriesService;

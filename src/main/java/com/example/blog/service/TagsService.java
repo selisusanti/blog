@@ -1,8 +1,8 @@
 package com.example.blog.service;
 
-import com.example.blog.common.dto.TagsDTO;
-import com.example.blog.common.dto.request.DeleteDTO;
-import com.example.blog.common.dto.response.ResponseTagsDTO;
+import com.example.blog.dto.request.DeleteDTO;
+import com.example.blog.dto.request.TagsDTO;
+import com.example.blog.dto.response.ResponseTagsDTO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,9 +1,7 @@
-package com.example.blog.common.dto.response;
+package com.example.blog.dto.response;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import javax.validation.constraints.Null;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

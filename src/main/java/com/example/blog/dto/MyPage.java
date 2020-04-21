@@ -1,4 +1,4 @@
-package com.example.blog.common.dto;
+package com.example.blog.dto;
 
 import java.util.List;
 

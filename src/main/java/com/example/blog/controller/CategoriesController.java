@@ -4,9 +4,6 @@ import com.example.blog.service.CategoriesService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,25 +11,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javassist.NotFoundException;
-
-// import com.example.blog.model.ResponseBaseDTO;
 import com.example.blog.repository.CategoriesRepository;
-
-import java.util.List;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.example.blog.common.dto.CategoriesDTO;
-import com.example.blog.common.dto.MyPage;
-import com.example.blog.common.dto.MyPageable;
-import com.example.blog.common.dto.request.DeleteDTO;
-import com.example.blog.common.dto.response.ResponseBaseDTO;
-import com.example.blog.common.dto.response.ResponseCategoriesDTO;
-import com.example.blog.common.dto.util.PageConverter;
-import com.example.blog.model.Categories;
+import com.example.blog.dto.MyPage;
+import com.example.blog.dto.MyPageable;
+import com.example.blog.dto.request.CategoriesDTO;
+import com.example.blog.dto.request.DeleteDTO;
+import com.example.blog.dto.response.ResponseBaseDTO;
+import com.example.blog.dto.response.ResponseCategoriesDTO;
+import com.example.blog.dto.util.PageConverter;
 
 @RestController
 public class CategoriesController{

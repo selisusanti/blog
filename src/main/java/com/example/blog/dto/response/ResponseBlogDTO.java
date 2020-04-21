@@ -1,4 +1,4 @@
-package com.example.blog.common.dto.response;
+package com.example.blog.dto.response;
 
 import java.util.ArrayList;
 import java.util.Date;

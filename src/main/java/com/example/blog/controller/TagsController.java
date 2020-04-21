@@ -6,13 +6,13 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.example.blog.common.dto.MyPage;
-import com.example.blog.common.dto.MyPageable;
-import com.example.blog.common.dto.TagsDTO;
-import com.example.blog.common.dto.request.DeleteDTO;
-import com.example.blog.common.dto.response.ResponseBaseDTO;
-import com.example.blog.common.dto.response.ResponseTagsDTO;
-import com.example.blog.common.dto.util.PageConverter;
+import com.example.blog.dto.MyPage;
+import com.example.blog.dto.MyPageable;
+import com.example.blog.dto.request.DeleteDTO;
+import com.example.blog.dto.request.TagsDTO;
+import com.example.blog.dto.response.ResponseBaseDTO;
+import com.example.blog.dto.response.ResponseTagsDTO;
+import com.example.blog.dto.util.PageConverter;
 import com.example.blog.repository.TagsRepository;
 import com.example.blog.service.TagsService;
 
