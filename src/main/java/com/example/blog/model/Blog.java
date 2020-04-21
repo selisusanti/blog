@@ -69,6 +69,9 @@ public class Blog extends AuditModel implements Serializable  {
     )
     private List<Tags> tag = new ArrayList<>();
 
+    @Column(name="image_url")
+    private String imageUrl;
+
     public Long getId() {
         return id;
     }
@@ -147,6 +150,14 @@ public class Blog extends AuditModel implements Serializable  {
 
     public void setTags_name(List<String> tags_name) {
         this.tags_name = tags_name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     

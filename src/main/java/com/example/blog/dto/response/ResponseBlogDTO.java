@@ -20,6 +20,7 @@ public class ResponseBlogDTO {
     private String content;
     private Author author;
     private Categories categories;
+    private String imageUrl;
     private List<Tags> tag = new ArrayList<>();
 
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy HH:mm:ss",timezone="GMT+7")
