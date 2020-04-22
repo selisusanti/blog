@@ -1,4 +1,4 @@
-package com.example.blog.common.dto.response;
+package com.example.blog.dto.request.response;
 import lombok.Data;
 
 @Data

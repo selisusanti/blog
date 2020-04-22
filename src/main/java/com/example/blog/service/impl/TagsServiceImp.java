@@ -3,10 +3,10 @@ package com.example.blog.service.impl;
 import java.util.Date;
 import java.util.Optional;
 
-import com.example.blog.common.dto.TagsDTO;
-import com.example.blog.common.dto.exception.ResourceNotFoundException;
-import com.example.blog.common.dto.request.DeleteDTO;
-import com.example.blog.common.dto.response.ResponseTagsDTO;
+import com.example.blog.dto.request.DeleteDTO;
+import com.example.blog.dto.request.TagsDTO;
+import com.example.blog.dto.response.ResponseTagsDTO;
+import com.example.blog.exception.ResourceNotFoundException;
 import com.example.blog.model.Tags;
 import com.example.blog.repository.TagsRepository;
 import com.example.blog.service.TagsService;

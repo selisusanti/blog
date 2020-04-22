@@ -1,9 +1,9 @@
 package com.example.blog.service;
 
-import com.example.blog.common.dto.AuthorDTO;
-import com.example.blog.common.dto.AuthorPasswordDTO;
-import com.example.blog.common.dto.request.DeleteDTO;
-import com.example.blog.common.dto.response.ResponseAuthorDTO;
+import com.example.blog.dto.request.AuthorDTO;
+import com.example.blog.dto.request.AuthorPasswordDTO;
+import com.example.blog.dto.request.DeleteDTO;
+import com.example.blog.dto.response.ResponseAuthorDTO;
 import com.example.blog.model.Author;
 
 import org.springframework.data.domain.Page;

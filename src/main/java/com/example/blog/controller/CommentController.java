@@ -1,5 +1,11 @@
 package com.example.blog.controller;
 
+import com.example.blog.dto.MyPage;
+import com.example.blog.dto.MyPageable;
+import com.example.blog.dto.request.CommentDTO;
+import com.example.blog.dto.response.ResponseBaseDTO;
+import com.example.blog.dto.response.ResponseCommentDTO;
+import com.example.blog.dto.util.PageConverter;
 import com.example.blog.service.CommentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
-import com.example.blog.common.dto.CommentDTO;
-import com.example.blog.common.dto.MyPage;
-import com.example.blog.common.dto.MyPageable;
-import com.example.blog.common.dto.response.ResponseBaseDTO;
-import com.example.blog.common.dto.response.ResponseCommentDTO;
-import com.example.blog.common.dto.util.PageConverter;
 
 @RestController
 public class CommentController {

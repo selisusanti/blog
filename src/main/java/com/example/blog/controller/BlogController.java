@@ -1,5 +1,13 @@
 package com.example.blog.controller;
 
+import com.example.blog.dto.MyPage;
+import com.example.blog.dto.MyPageable;
+import com.example.blog.dto.request.BlogDTO;
+import com.example.blog.dto.request.DeleteDTO;
+import com.example.blog.dto.response.BlogResponse;
+import com.example.blog.dto.response.ResponseBaseDTO;
+import com.example.blog.dto.response.ResponseBlogDTO;
+import com.example.blog.dto.util.PageConverter;
 import com.example.blog.repository.BlogRepository;
 import com.example.blog.service.BlogService;
 import com.example.blog.service.FileStorageService;
@@ -17,18 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.blog.common.dto.BlogDTO;
-import com.example.blog.common.dto.MyPage;
-import com.example.blog.common.dto.MyPageable;
-import com.example.blog.common.dto.request.DeleteDTO;
-import com.example.blog.common.dto.response.BaseResponseDTO;
-import com.example.blog.common.dto.response.BlogResponse;
-import com.example.blog.common.dto.response.ResponseBaseDTO;
-import com.example.blog.common.dto.response.ResponseBlogDTO;
-import com.example.blog.common.dto.util.PageConverter;
-
 import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.core.io.Resource;
@@ -137,7 +134,7 @@ public class BlogController {
     }
 
     @RequestMapping(value = "/blogs", method = RequestMethod.DELETE)
-    public BaseResponseDTO<BlogResponse> deleteBlog(@RequestBody DeleteDTO request) {
+    public ResponseBaseDTO<BlogResponse> deleteBlog(@RequestBody DeleteDTO request) {
         return blogService.delete(request);
     }
 

@@ -7,12 +7,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-import com.example.blog.common.dto.exception.ResourceNotFoundException;
-import com.example.blog.common.dto.response.ResponseBaseDTO;
-import com.example.blog.common.dto.response.ResponseUploadFileDTO;
 import com.example.blog.config.FileStorageProperties;
+import com.example.blog.dto.request.response.ResponseUploadFileDTO;
 import com.example.blog.exception.FileStorageException;
 import com.example.blog.exception.MyFileNotFoundException;
+import com.example.blog.exception.ResourceNotFoundException;
 import com.example.blog.model.Blog;
 import com.example.blog.repository.BlogRepository;
 
@@ -20,8 +19,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;

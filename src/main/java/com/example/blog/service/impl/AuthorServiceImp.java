@@ -2,12 +2,11 @@ package com.example.blog.service.impl;
 
 import java.util.Date;
 
-import com.example.blog.common.dto.AuthorDTO;
-import com.example.blog.common.dto.AuthorPasswordDTO;
-import com.example.blog.common.dto.exception.ResourceNotFoundException;
-import com.example.blog.common.dto.request.DeleteDTO;
-import com.example.blog.common.dto.response.ResponseAuthorDTO;
-import com.example.blog.common.dto.response.ResponseBaseDTO;
+import com.example.blog.dto.request.AuthorDTO;
+import com.example.blog.dto.request.AuthorPasswordDTO;
+import com.example.blog.dto.request.DeleteDTO;
+import com.example.blog.dto.response.ResponseAuthorDTO;
+import com.example.blog.exception.ResourceNotFoundException;
 import com.example.blog.model.Author;
 import com.example.blog.repository.AuthorRepository;
 import com.example.blog.service.AuthorService;

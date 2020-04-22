@@ -1,6 +1,6 @@
-package com.example.blog.common.dto.util;
+package com.example.blog.dto.util;
 
-import com.example.blog.common.dto.MyPage;
+import com.example.blog.dto.MyPage;
 
 import org.springframework.data.domain.Page;
 
