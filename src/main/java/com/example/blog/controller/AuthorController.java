@@ -1,5 +1,6 @@
 package com.example.blog.controller;
 
+import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -22,12 +23,48 @@ import com.example.blog.dto.response.ResponseBaseDTO;
 import com.example.blog.dto.util.PageConverter;
 import com.example.blog.model.Author;
 import com.example.blog.service.AuthorService;
+import com.example.blog.dto.response.ResponseOauthDTO;
+
+
+import javax.sql.DataSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.AuthorizationRequest;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
+import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
+
 
 @RestController
 public class AuthorController {
     
     @Autowired
     AuthorService AuthorService;
+
+    @Autowired
+	private DataSource dataSource;
+
+	@Autowired
+    private ClientDetailsService clientDetailsStore;
+
+    @Autowired
+    public TokenStore tokenStore() {
+        return new JdbcTokenStore(dataSource);
+	}
+
+    @Autowired
+	private AuthenticationManager authenticationManager;
 
     @RequestMapping(value = "/authors", method = RequestMethod.POST)
     public ResponseBaseDTO createAuthors(@Valid @RequestBody Author request) {
@@ -82,5 +119,85 @@ public class AuthorController {
         return ResponseBaseDTO.ok(response);
 
     }
+
+
+    
+    //Normal Login
+	@RequestMapping(value="/api/login", method = RequestMethod.POST)
+	public  ResponseEntity<ResponseOauthDTO> login(@RequestParam HashMap<String, String> params) throws Exception
+	{
+		ResponseOauthDTO response = new ResponseOauthDTO();
+		Author checkUser =  AuthorService.findByUsername(params.get("username"));
+
+	    if (checkUser != null)
+		{
+			try {
+				OAuth2AccessToken token = this.getToken(params);
+			
+				response.setStatus(true);
+				response.setCode("200");
+				response.setMessage("success");
+				response.setData(token);
+
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			} catch (Exception exception) {
+				
+                    response.setStatus(false);
+                    response.setCode("500");
+                    response.setMessage(exception.getMessage());
+			}
+		} else {
+			throw new Exception();
+		}
+		
+
+		return new ResponseEntity<ResponseOauthDTO>(response, HttpStatus.UNAUTHORIZED);
+    }
+    
+    private OAuth2AccessToken getToken(HashMap<String, String> params) throws HttpRequestMethodNotSupportedException {
+		if (params.get("username") == null ) {
+			throw new UsernameNotFoundException("username not found");
+		}
+
+		if (params.get("password") == null) {
+			throw new UsernameNotFoundException("password not found");
+		}
+
+		if (params.get("client_id") == null) {
+			throw new UsernameNotFoundException("client_id not found");
+		}
+
+		if (params.get("client_secret") == null) {
+			throw new UsernameNotFoundException("client_secret not found");
+		}
+
+		DefaultOAuth2RequestFactory defaultOAuth2RequestFactory = new DefaultOAuth2RequestFactory(clientDetailsStore);
+
+		AuthorizationRequest authorizationRequest = defaultOAuth2RequestFactory.createAuthorizationRequest(params);
+		authorizationRequest.setApproved(true);
+
+		OAuth2Request oauth2Request = defaultOAuth2RequestFactory.createOAuth2Request(authorizationRequest);
+		
+		final UsernamePasswordAuthenticationToken loginToken = new UsernamePasswordAuthenticationToken(
+				params.get("username"), params.get("password"));
+		Authentication authentication = authenticationManager.authenticate(loginToken);
+
+		OAuth2Authentication authenticationRequest = new OAuth2Authentication(oauth2Request, authentication);
+		authenticationRequest.setAuthenticated(true);
+
+		OAuth2AccessToken token = tokenServices().createAccessToken(authenticationRequest);
+
+
+		return token;
+    } 
+    
+    @Autowired
+	public AuthorizationServerTokenServices tokenServices() {
+		final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+		defaultTokenServices.setAccessTokenValiditySeconds(-1);
+
+		defaultTokenServices.setTokenStore(tokenStore());
+		return defaultTokenServices;
+	}
 
 }
