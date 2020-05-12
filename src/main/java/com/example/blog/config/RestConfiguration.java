@@ -39,6 +39,9 @@ public class RestConfiguration extends AuthorizationServerConfigurerAdapter {
 
     private static final String RESOURCE_ID = "resource-server-rest-api";
     private static final String RESOURCE_MOBILE = "mobile-resource-id";
+	private static final String SCOPE_READ = "read";
+	private static final String SCOPE_WRITE = "write";
+	private static final String TRUST = "trust";
 
 	@Autowired
 	private DataSource dataSource;
