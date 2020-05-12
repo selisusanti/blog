@@ -1,11 +1,14 @@
 package com.example.blog.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import com.example.blog.dto.request.AuthorDTO;
 import com.example.blog.dto.request.AuthorPasswordDTO;
 import com.example.blog.dto.request.DeleteDTO;
 import com.example.blog.dto.response.ResponseAuthorDTO;
+import com.example.blog.dto.response.ResponseBaseDTO;
+import com.example.blog.dto.response.ResponseOauthDTO;
 import com.example.blog.exception.ResourceNotFoundException;
 import com.example.blog.model.Author;
 import com.example.blog.repository.AuthorRepository;
@@ -17,6 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
 import javassist.NotFoundException;
@@ -117,17 +121,18 @@ public class AuthorServiceImp implements AuthorService {
 
     @Override
     public ResponseAuthorDTO update(Long id, AuthorDTO request) {
-        try{
-            Author authors = authorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
+        try {
+            Author authors = authorRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
             authors.setFirst_name(request.getFirst_name());
             authors.setLast_name(request.getLast_name());
             authors.setUsername(request.getUsername());
             authorRepository.save(authors);
             return fromEntity(authors);
-        }catch(ResourceNotFoundException e){
+        } catch (ResourceNotFoundException e) {
             log.error(e.getMessage(), e);
             throw e;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
@@ -135,18 +140,24 @@ public class AuthorServiceImp implements AuthorService {
 
     @Override
     public ResponseAuthorDTO updatePassword(Long id, AuthorPasswordDTO request) {
-        try{
-            Author authors = authorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
+        try {
+            Author authors = authorRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
             authors.setFirst_name(request.getPassword());
             authorRepository.save(authors);
             return fromEntity(authors);
-        }catch(ResourceNotFoundException e){
+        } catch (ResourceNotFoundException e) {
             log.error(e.getMessage(), e);
             throw e;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
     }
+
+    @Override
+	public Author findByUsername(String username) {
+		return authorRepository.findByUsername(username);
+	}
 
 }
