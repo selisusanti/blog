@@ -1,6 +1,8 @@
 package com.example.blog.controller;
 
 import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -29,6 +31,7 @@ import com.example.blog.dto.response.ResponseOauthDTO;
 import javax.sql.DataSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
@@ -187,6 +190,22 @@ public class AuthorController {
 
 		OAuth2AccessToken token = tokenServices().createAccessToken(authenticationRequest);
 
+
+        Map<String, Object> adInfo = new HashMap<>();
+
+        adInfo.put("role", null);
+        
+        try {
+
+            Author author = (Author) authentication.getPrincipal();
+            
+			adInfo.put("role", author.getRole());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		((DefaultOAuth2AccessToken) token).setAdditionalInformation(adInfo);
 
 		return token;
     } 
