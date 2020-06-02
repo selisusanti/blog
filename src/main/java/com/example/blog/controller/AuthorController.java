@@ -23,8 +23,11 @@ import com.example.blog.dto.request.DeleteDTO;
 import com.example.blog.dto.response.ResponseAuthorDTO;
 import com.example.blog.dto.response.ResponseBaseDTO;
 import com.example.blog.dto.util.PageConverter;
+import com.example.blog.model.AppsMenu;
 import com.example.blog.model.Author;
+import com.example.blog.repository.AppsMenuRepository;
 import com.example.blog.service.AuthorService;
+import com.example.blog.service.RoleMenuService;
 import com.example.blog.dto.response.ResponseOauthDTO;
 
 
@@ -58,8 +61,14 @@ public class AuthorController {
     @Autowired
 	private DataSource dataSource;
 
+    @Autowired
+	private RoleMenuService roleMenuService;
+
 	@Autowired
     private ClientDetailsService clientDetailsStore;
+    
+    @Autowired
+    private AppsMenuRepository appsMenuRepository;
 
     @Autowired
     public TokenStore tokenStore() {
@@ -99,27 +108,36 @@ public class AuthorController {
     public ResponseBaseDTO getAuthors(MyPageable pageable, 
         @RequestParam(required = false) String param, HttpServletRequest request
     ){
+        AppsMenu menu = appsMenuRepository.findByMenu("/authors");
+        return ResponseBaseDTO.ok(menu);
 
-        Page<ResponseAuthorDTO> author;
 
-        if(param != null){
-            author = AuthorService.findByName(MyPageable.convertToPageable(pageable),param);
-        }else{
-            author = AuthorService.findAll(MyPageable.convertToPageable(pageable)); 
-        }
-        PageConverter<ResponseAuthorDTO> converter = new PageConverter<>();
+        // boolean roleAccess = roleMenuService.roleAccess("/authors", request.getMethod());
+    
+        // if(roleAccess ==false){
+        //     return ResponseBaseDTO.error("99", "Role anda tidak dapat mengakses menu author");
+        // }
+
+        // Page<ResponseAuthorDTO> author;
+
+        // if(param != null){
+        //     author = AuthorService.findByName(MyPageable.convertToPageable(pageable),param);
+        // }else{
+        //     author = AuthorService.findAll(MyPageable.convertToPageable(pageable)); 
+        // }
+        // PageConverter<ResponseAuthorDTO> converter = new PageConverter<>();
        
-        String search = ""; 
-        String url = String.format("%s://%s:%d/authors/",request.getScheme(),  request.getServerName(), request.getServerPort());
+        // String search = ""; 
+        // String url = String.format("%s://%s:%d/authors/",request.getScheme(),  request.getServerName(), request.getServerPort());
 
  
-        if(param != null){
-            search += "&param="+param;
-        }
+        // if(param != null){
+        //     search += "&param="+param;
+        // }
  
-        MyPage<ResponseAuthorDTO> response = converter.convert(author, url, search);
+        // MyPage<ResponseAuthorDTO> response = converter.convert(author, url, search);
  
-        return ResponseBaseDTO.ok(response);
+        // return ResponseBaseDTO.ok(response);
 
     }
 
