@@ -1,40 +1,53 @@
 package com.example.blog.service;
 
-import java.util.Arrays;
-import java.util.Collection;
 
+import java.util.Set;
+
+import com.example.blog.model.RoleMember;
+import com.example.blog.model.Author;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
-import com.example.blog.model.Author;
-import com.example.blog.repository.AuthorRepository;
-
-/**
- * UserAuthService
- */
 @Service
 public class UserAuthService implements UserDetailsService {
-
+    
     @Autowired
-    private AuthorRepository authorRepository;
+    private AuthorService authorService;
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Author author = authorRepository.findByUsername(username);
-        if (author == null) {
-            throw new UsernameNotFoundException("Invalid username or password.");
+
+
+        Author author = authorService.findByUsername(username);
+
+        if(author != null) {
+
+            if (author.getRoleMember().size() > 0 ) {
+                Set<RoleMember> roles = author.getRoleMember();
+
+                for (RoleMember role: roles) {
+
+                    switch (role.getRole().getRoletitle().toLowerCase()) {
+                        case "superadmin":
+                        case "systemadmin":
+                        case "coordinator":
+                        case "supervisor":
+                            return author;
+                    }
+                }
+            }
+
+          
+
+            return author;
         }
-        return new org.springframework.security.core.userdetails.User(author.getUsername(), author.getPassword(), getAuthority());
-    }
 
-    private Collection<? extends GrantedAuthority> getAuthority() {
-        return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        throw new UsernameNotFoundException(username);
     }
-
-    
 }

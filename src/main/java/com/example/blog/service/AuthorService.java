@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.example.blog.dto.request.AuthorDTO;
 import com.example.blog.dto.request.AuthorPasswordDTO;
+import com.example.blog.dto.request.AuthorRequest;
 import com.example.blog.dto.request.DeleteDTO;
 import com.example.blog.dto.response.ResponseAuthorDTO;
 import com.example.blog.dto.response.ResponseBaseDTO;
@@ -15,7 +16,7 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 
 public interface AuthorService{
 
-    ResponseAuthorDTO save(Author request);
+    ResponseAuthorDTO save(AuthorRequest request);
     Page<ResponseAuthorDTO> findAll(Pageable pageable);
     Page<ResponseAuthorDTO> findByName(Pageable pageable, String param);
     ResponseAuthorDTO findById(Long id);

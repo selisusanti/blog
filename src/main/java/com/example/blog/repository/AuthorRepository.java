@@ -13,4 +13,7 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
 
     @Query("select e from #{#entityName} e where e.username like %:username% ")
     Author findByUsername(String username);
+
+    @Query("select e from #{#entityName} e where e.id = :id ")
+    Author findByUserId(Long id);
 }

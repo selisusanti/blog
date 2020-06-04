@@ -1,6 +1,8 @@
 package com.example.blog.controller;
 
 import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -18,17 +20,22 @@ import com.example.blog.dto.MyPageable;
 import com.example.blog.dto.request.AuthorDTO;
 import com.example.blog.dto.request.AuthorPasswordDTO;
 import com.example.blog.dto.request.DeleteDTO;
+import com.example.blog.dto.request.AuthorRequest;
 import com.example.blog.dto.response.ResponseAuthorDTO;
 import com.example.blog.dto.response.ResponseBaseDTO;
 import com.example.blog.dto.util.PageConverter;
+import com.example.blog.model.AppsMenu;
 import com.example.blog.model.Author;
+import com.example.blog.repository.AppsMenuRepository;
 import com.example.blog.service.AuthorService;
+import com.example.blog.service.RoleMenuService;
 import com.example.blog.dto.response.ResponseOauthDTO;
 
 
 import javax.sql.DataSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
@@ -55,8 +62,14 @@ public class AuthorController {
     @Autowired
 	private DataSource dataSource;
 
+    @Autowired
+	private RoleMenuService roleMenuService;
+
 	@Autowired
     private ClientDetailsService clientDetailsStore;
+    
+    @Autowired
+    private AppsMenuRepository appsMenuRepository;
 
     @Autowired
     public TokenStore tokenStore() {
@@ -67,7 +80,7 @@ public class AuthorController {
 	private AuthenticationManager authenticationManager;
 
     @RequestMapping(value = "/authors", method = RequestMethod.POST)
-    public ResponseBaseDTO createAuthors(@Valid @RequestBody Author request) {
+    public ResponseBaseDTO createAuthors(@Valid @RequestBody AuthorRequest request) {
         return ResponseBaseDTO.ok(AuthorService.save(request));
     }
 
@@ -96,6 +109,12 @@ public class AuthorController {
     public ResponseBaseDTO getAuthors(MyPageable pageable, 
         @RequestParam(required = false) String param, HttpServletRequest request
     ){
+
+        boolean roleAccess = roleMenuService.roleAccess("/authors", request.getMethod());
+    
+        if(roleAccess ==false){
+            return ResponseBaseDTO.error("99", "Role anda tidak dapat mengakses menu author");
+        }
 
         Page<ResponseAuthorDTO> author;
 
@@ -187,6 +206,22 @@ public class AuthorController {
 
 		OAuth2AccessToken token = tokenServices().createAccessToken(authenticationRequest);
 
+
+        Map<String, Object> adInfo = new HashMap<>();
+
+        adInfo.put("role", null);
+        
+        try {
+
+            Author author = (Author) authentication.getPrincipal();
+            
+			adInfo.put("role", author.getRole());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		((DefaultOAuth2AccessToken) token).setAdditionalInformation(adInfo);
 
 		return token;
     } 
