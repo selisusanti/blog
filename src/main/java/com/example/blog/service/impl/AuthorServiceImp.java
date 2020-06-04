@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.example.blog.dto.request.AuthorDTO;
 import com.example.blog.dto.request.AuthorPasswordDTO;
+import com.example.blog.dto.request.AuthorRequest;
 import com.example.blog.dto.request.DeleteDTO;
 import com.example.blog.dto.response.ResponseAuthorDTO;
 import com.example.blog.dto.response.ResponseBaseDTO;
@@ -51,7 +52,7 @@ public class AuthorServiceImp implements AuthorService {
     }
 
     @Override
-    public ResponseAuthorDTO save(Author request) {
+    public ResponseAuthorDTO save(AuthorRequest request) {
 
         try {
             Author author = new Author();

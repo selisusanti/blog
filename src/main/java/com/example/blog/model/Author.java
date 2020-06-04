@@ -23,7 +23,7 @@ public class Author extends AuditModel implements UserDetails   {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer id;
+    private Long id;
     @Column(length = 45)
     private String username;
     @Column
