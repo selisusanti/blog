@@ -80,7 +80,12 @@ public class AuthorController {
 	private AuthenticationManager authenticationManager;
 
     @RequestMapping(value = "/authors", method = RequestMethod.POST)
-    public ResponseBaseDTO createAuthors(@Valid @RequestBody AuthorRequest request) {
+    public ResponseBaseDTO createAuthors(@Valid @RequestBody AuthorRequest request, HttpServletRequest requests) {
+        boolean roleAccess = roleMenuService.roleAccess("/authors", requests.getMethod());
+    
+        if(roleAccess ==false){
+            return ResponseBaseDTO.error("99", "Role anda tidak dapat mengakses menu author");
+        }
         return ResponseBaseDTO.ok(AuthorService.save(request));
     }
 
